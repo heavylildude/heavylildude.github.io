@@ -23,6 +23,11 @@
 		background-color: #ddd;
 	}
 	
+	.card {
+	  width: 320px;
+	  height: auto;
+	}
+	
 	p { 
 	  height: auto;
 	  background-color: transparent;
@@ -86,7 +91,7 @@
   			var dar = data[i]['URL'].split('?v=');
   			var inserted = dar[1];
   			var em = '<iframe src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-  			ret = ret + em + '<p>' + data[i]['NOTE'] + '</p>';
+  			ret = ret + '<div class="card">' + em + '<p>' + data[i]['NOTE'] + '</p></div>';
   		}
     	document.querySelector('#one').innerHTML = ret;
   	});
