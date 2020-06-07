@@ -14,13 +14,19 @@
 		margin: 0 auto;
 	}
 	
-	iframe {
+	iframe, p {
 		width: 320px;
 		height: 179px;
 		margin-right: 10px;
 		margin-bottom: 10px;
 		float: left;
 		background-color: #ddd;
+	}
+	
+	p { 
+	  height: auto;
+	  background-color: transparent;
+	  margin-bottom: 20px;
 	}
 	
 	.vid {
@@ -33,7 +39,7 @@
 			margin: 0 auto;
 		}
 		
-		iframe {
+		iframe, p {
 			margin: 10px 0;
 		}
 	}
@@ -80,7 +86,7 @@
   			var dar = data[i]['URL'].split('?v=');
   			var inserted = dar[1];
   			var em = '<iframe src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-  			ret = ret + em;
+  			ret = ret + em + '<p>' + data[i]['NOTE'] + '</p>';
   		}
     	document.querySelector('#one').innerHTML = ret;
   	});
