@@ -1,21 +1,154 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
-	<title>learn js</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" type="text/css" href="assets/css/global.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+	* {
+		margin:0;
+		padding: 0;
+		font-family: sans-serif;
+	}
+	
+	body {
+		width: 90vw;
+		margin: 0 auto;
+	}
+	
+	iframe {
+		width: 320px;
+		height: 179px;
+		margin-right: 10px;
+		margin-bottom: 10px;
+		float: left;
+	}
+	
+	.vid {
+		display: inline-block;
+	}
+	
+	@media (max-width: 480px) {
+		body {
+			width: 320px;
+			margin: 0 auto;
+		}
+		
+		iframe {
+			margin: 10px 0;
+		}
+	}
+	</style>
 </head>
 <body>
-  <nav id="navigation"></nav>
-  
-  <div id="the_content">
-    <div id="top_part"></div>
-    <div id="mid_part"></div>
-  </div>
-
+	<br>
+	<h1>Testing NewEdu</h1>
+	<br>
+	<h3>Design Principles</h3>
+	<br>
+	<div id="one" class="vid"></div>
+	<hr>
+	<br>
+	<h3>Typography</h3>
+	<br>
+	<div id="two" class="vid"></div>
+	<hr>
+	<br>
+	<h3>Branding</h3>
+	<br>
+	<div id="three" class="vid"></div>
+	<hr>
+	<br>
+	<h3>Packaging</h3>
+	<br>
+	<div id="four" class="vid"></div>
+	<hr>
+	<br>
+	<h3>Advertising</h3>
+	<br>
+	<div id="five" class="vid"></div>
+	<script src="xyz.js" class="vid"></script>
+	<script>
+	function init() {
+  	ttp.init( {
+    	key: 'https://docs.google.com/spreadsheets/d/1CYors4BWrw63RqxICc8dU3gYgSSYtTeMGQ7dHhEdFnE/pubhtml',
+    	simpleSheet: true }
+  	).then(function(data, ttp) { 
+  		var ret = '';
+  		
+  		for (var i = 0; i < data.length; i++) {
+  			
+  			var dar = data[i]['URL'].split('?v=');
+  			var inserted = dar[1];
+  			var em = '<iframe src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  			ret = ret + em;
+  		}
+    	document.querySelector('#one').innerHTML = ret;
+  	});
+  	
+  	ttp.init( {
+    	key: 'https://docs.google.com/spreadsheets/d/1N8jLYNUCuM9_Zzl3wxNJdudvuqdIbPGsCROefrIzzKQ/pubhtml',
+    	simpleSheet: true }
+  	).then(function(data, ttp) { 
+  		var ret = '';
+  		
+  		for (var i = 0; i < data.length; i++) {
+  			
+  			var dar = data[i]['URL'].split('?v=');
+  			var inserted = dar[1];
+  			var em = '<iframe src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  			ret = ret + em;
+  		}
+    	document.querySelector('#two').innerHTML = ret;
+  	});
+  	
+  	ttp.init( {
+    	key: 'https://docs.google.com/spreadsheets/d/11-7uPnGQHLSgqckkCRrOuHhMCK95ccFaHVMzOTexTfU/pubhtml',
+    	simpleSheet: true }
+  	).then(function(data, ttp) { 
+  		var ret = '';
+  		
+  		for (var i = 0; i < data.length; i++) {
+  			
+  			var dar = data[i]['URL'].split('?v=');
+  			var inserted = dar[1];
+  			var em = '<iframe src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  			ret = ret + em;
+  		}
+    	document.querySelector('#three').innerHTML = ret;
+  	});
+ 
+  	ttp.init( {
+    	key: 'https://docs.google.com/spreadsheets/d/1iarhUV_bI-8s_Kye7x-GO7y5wg6x1Q1qpze4lA93lto/pubhtml',
+    	simpleSheet: true }
+  	).then(function(data, ttp) { 
+  		var ret = '';
+  		
+  		for (var i = 0; i < data.length; i++) {
+  			
+  			var dar = data[i]['URL'].split('?v=');
+  			var inserted = dar[1];
+  			var em = '<iframe src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  			ret = ret + em;
+  		}
+    	document.querySelector('#four').innerHTML = ret;
+  	});
+ 
+  	ttp.init( {
+    	key: 'https://docs.google.com/spreadsheets/d/1YZm3SyGVj_qlGiDaEG_iKXJXubUchZDSIjaVn7-hxHY/pubhtml',
+    	simpleSheet: true }
+  	).then(function(data, ttp) { 
+  		var ret = '';
+  		
+  		for (var i = 0; i < data.length; i++) {
+  			
+  			var dar = data[i]['URL'].split('?v=');
+  			var inserted = dar[1];
+  			var em = '<iframe src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  			ret = ret + em;
+  		}
+    	document.querySelector('#five').innerHTML = ret;
+  	});
+	}
+	window.addEventListener('DOMContentLoaded', init)
+	</script>
 </body>
 </html>
-<script type="text/javascript" src="assets/js/nav.js"></script>
-<script type="text/javascript" src="assets/js/top_part.js"></script>
-<script type="text/javascript" src="assets/js/bottom_part.js"></script>
-<script type="text/javascript" src="assets/js/global.js"></script>
