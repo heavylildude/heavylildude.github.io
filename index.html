@@ -14,6 +14,14 @@
 		margin: 0 auto;
 	}
 	
+	.card {
+	  width: 320px;
+	  height: auto;
+	  float: left;
+	  margin-right: 10px;
+	  margin-bottom: 10px;
+	}
+	
 	iframe, p {
 		width: 320px;
 		height: 179px;
@@ -23,14 +31,11 @@
 		background-color: #ddd;
 	}
 	
-	.card {
-	  width: 320px;
-	  height: auto;
-	}
 	
 	p { 
 	  height: auto;
 	  background-color: transparent;
+	  margin-right: 0;
 	  margin-bottom: 20px;
 	}
 	
@@ -90,7 +95,7 @@
   			
   			var dar = data[i]['URL'].split('?v=');
   			var inserted = dar[1];
-  			var em = '<iframe src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  			var em = '<iframe style="margin-right:0px" src="https://www.youtube.com/embed/' + inserted + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
   			ret = ret + '<div class="card">' + em + '<p>' + data[i]['NOTE'] + '</p></div>';
   		}
     	document.querySelector('#one').innerHTML = ret;
