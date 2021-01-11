@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chris' Randomizer</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			
+		}
+
+		#boo {
+			width: 100vw;
+			height: 40vh;
+			padding-top: 10vh;
+			font-size: 200px;
+			text-align: center;
+		}
+
+		#btn {
+			width: 80px;
+			height: 50px;
+			padding-top: 30px;
+			background-color: red;
+			border-radius: 100px;
+			margin: 0 auto;
+			text-align: center;
+			font-weight: bold;
+			color:white;
+			cursor: pointer;
+			font-family: sans-serif;
+		}
+	</style>
+</head>
+<body>
+	<div id="boo"></div>
+	<div id="btn" onclick="boom()">CLICK</div>
+	<script type="text/javascript">
+		function getRndInteger() {
+		  return Math.floor(Math.random() * (3 - 1 + 1) ) + 1;
+		}
+
+		function animateValue(obj, start, end, duration) {
+		  let startTimestamp = null;
+		  const step = (timestamp) => {
+		    if (!startTimestamp) startTimestamp = timestamp;
+		    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+		    obj.innerHTML = Math.floor(progress * (end - start) + start);
+		    if (progress < 1) {
+		      window.requestAnimationFrame(step);
+		    }
+		  };
+		  window.requestAnimationFrame(step);
+		}
+
+		function boom() {
+			document.getElementById('btn').style.backgroundColor = 'grey';
+			animateValue(document.getElementById('boo'), 20, getRndInteger(), 1000);
+			setTimeout(function(){ document.getElementById('btn').style.backgroundColor = 'red'; }, 1000);
+			
+		}
+	</script>
+</body>
+</html>
