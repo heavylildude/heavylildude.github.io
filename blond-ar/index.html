@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Hello</title>
+
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script> -->
+    <script src="aframe-ar-nft.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        width: 100vw;
+        height: 100vh;
+      }
+      .arjs-loader {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .arjs-loader div {
+        text-align: center;
+        font-size: 1.25em;
+        color: white;
+        font-family: sans-serif;
+      }
+
+      #that {
+        width: 100vw;
+        height: 100vw;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        /* bring your own prefixes */
+        transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        /* display: none; */
+        z-index: 9999;
+      }
+
+      .on {
+        display: block;
+      }
+
+      .off {
+        display: none;
+      }
+
+    </style>
+
+    <script>
+    AFRAME.registerComponent('markerhandler', {
+        init: function () {
+          this.el.sceneEl.addEventListener('markerFound', () => {
+            var check = document.getElementById('that').className;
+            if (check == 'off') {
+              document.getElementById('that').className = "on";
+            }
+              
+          })
+        }
+      });
+    </script>
+  </head>
+
+  <body style="margin: 0px; overflow: hidden;">
+    <div class="arjs-loader"><div>Loading, please wait...</div></div>
+
+    <a-scene
+      vr-mode-ui="enabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+      embedded
+      arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
+
+      <!-- <a-assets>
+        <video crossorigin="anonymous" id="v_id" autoplay loop="true" type="video/mp4" preload="auto" src="http://localhost:8000/blond-ar/video.mp4">  
+    </a-assets> -->
+
+
+      <a-nft
+        markerhandler
+        type="nft"
+        url="arjs/marker"
+        smooth="true"
+        smoothCount="10"
+        smoothTolerance=".01"
+        smoothThreshold="5">
+      
+      </a-nft>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+     <video id="that" controls class="off">
+      <source src="video.mp4" type="video/mp4">
+      <source src="video.ogg" type="video/ogg">
+    Your browser does not support the video tag.
+    </video>  
+  </body>
+</html>
