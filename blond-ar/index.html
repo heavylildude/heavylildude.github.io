@@ -70,14 +70,24 @@
               document.getElementById('that').className = "on";
             }
               
-          })
+          });
+          
+          this.el.sceneEl.addEventListener('markerLost', () => {
+            var check = document.getElementById('that').className;
+            if (check == 'on') {
+              document.getElementById('that').className = "off";
+              var x = document.getElementById('that');
+              x.pause();
+            }
+              
+          });
         }
       });
     </script>
   </head>
 
   <body style="margin: 0px; overflow: hidden;">
-    <div class="arjs-loader"><div>Test 4, loading...</div></div>
+    <div class="arjs-loader"><div>Test 5, loading...</div></div>
 
     <a-scene
       vr-mode-ui="enabled: false;"
