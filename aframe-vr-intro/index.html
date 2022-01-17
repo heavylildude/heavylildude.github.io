@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Aframe VR</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <style>
+    #pop {
+      width: 50vw;
+      height: 30vh;
+      position: fixed;
+      top: 25vh;
+      left: 25vw;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<a-scene>
+  <a-entity camera position="0 0 0" look-controls wasd-controls>
+    <a-cursor fuse="true" fuseTimeout="500" ></a-cursor>
+  </a-entity>
+
+  <a-box id="top_box" color="red" position="0 2 -5" animation="property: rotation; to: 0 360 0; duration: 1000; easing: linear; loop: true"></a-box>
+  <a-box id="bottom_box" color="pink" position="0 -2 -5" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"></a-box>
+  <a-box id="left_box" color="yellow" position="5 0 -5"></a-box>
+  <a-box id="right_box" color="green" position="-5 0 -5"></a-box>
+</a-scene>
+
+  <div id="pop">
+    <h1>hello</h1>
+    <h3>lorem ipsum</h3>
+    <button type="button" onclick="document.getElementById('pop').style.display = 'none';">CLOSE</button>
+  </div>
+
+<script>
+  var top_box = document.querySelector('#top_box');
+  var bottom_box = document.querySelector('#bottom_box');
+  var left_box = document.querySelector('#left_box');
+  var right_box = document.querySelector('#right_box');
+
+  top_box.addEventListener('fusing', function(evt) { 
+    evt.target.setAttribute('color', 'purple');
+    document.getElementById('pop').style.display = "block";
+  });
+
+  bottom_box.addEventListener('fusing', function(evt) { 
+    evt.target.setAttribute('animation', 'property: rotation; to: 0 360 0; duration: 3000; easing: linear; loop: true');
+  });
+  
+  left_box.addEventListener('fusing', function(evt) { 
+    evt.target.setAttribute('animation', 'property: position; to: 0 0 -5; dur: 2000; easing: linear; loop: false');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Aframe VR</title>
+	<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+	<style type="text/css">
+		#information {
+			position: fixed;
+			top: 20%;
+			left: 10%;
+      width: 80%;
+      height: 30%;
+      background-color: rgba(255, 255,255, 0.7);
+      border-radius: 20px;
+      text-align: center;
+      padding-top: 10%;
+      display: none;
+		}
+	</style>
+</head>
+<body>
+
+<a-scene>
+	<a-entity id="default_angle" camera position="0 0 0" look-controls wasd-controls> 
+  	<a-cursor fuse="true" fuseTimeout="500"></a-cursor>
+  </a-entity>
+
+  <a-box id="thatthing" color="red" animation="property: rotation; to: 0 360 0; dur: 2000; easing: linear; loop: true" position="-5.569 2.288 -19.96"></a-box>
+
+  <a-sky src="room.jpg"></a-sky>
+</a-scene>
+
+<div id="information" style="display:none;" onclick="document.querySelector('#information').style.display = 'none';">
+  <h1>The Building of What</h1>
+  <h3>Lorem ipsum great building</h3>
+</div>
+
+<script>
+  var thatthing = document.querySelector('#thatthing');
+
+  thatthing.addEventListener('fusing', function (evt) {
+
+    var check = document.querySelector('#information').style.display;
+    if (check == 'none') {
+      document.querySelector('#information').style.display = 'block';
+      setTimeout(function(){ 
+        document.querySelector('#information').style.display = 'none';
+      }, 3000);
+    } else {
+      document.querySelector('#information').style.display = 'none';
+    }
+
+  });
+
+  
+
+</script> 
+
+</body>
+</html>

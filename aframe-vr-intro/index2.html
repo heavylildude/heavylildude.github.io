@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Aframe VR</title>
+	<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+</head>
+<body>
+
+<a-scene>
+	<a-entity camera position="0 0 0" look-controls wasd-controls> 
+    <a-cursor fuse="true" fuseTimeout="500" ></a-cursor>
+  </a-entity>
+  
+  <a-box id="top_box" color="red" position="0 2 -5" ></a-box>
+  <a-box id="bottom_box" color="pink" position="0 -2 -5" animation="property: rotation; to: 0 360 0; dur: 2000; easing: linear; loop: true"></a-box>
+  <a-box id="left_box" color="yellow" position="5 0 -5"></a-box>
+  <a-box id="right_box" color="green" position="-5 0 -5"></a-box>
+
+  <a-sky color="lightblue"></a-sky>
+</a-scene>
+
+<script>
+  var top_box = document.getElementById('top_box');
+  top_box.addEventListener('fusing', function (evt) {    
+		evt.target.setAttribute('color', 'white');
+		evt.target.setAttribute('position', '0 2 -10');
+		evt.target.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 2000; easing: linear; loop: true');
+  });
+</script>
+</body>
+</html>
