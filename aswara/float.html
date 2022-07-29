@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Historical Building</title>
+    <script src="a.js"></script>
+    <script src="b.js"></script>
+    <style>
+      .arjs-loader {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .arjs-loader div {
+        text-align: center;
+        font-size: 1.25em;
+        color: white;
+        font-family: sans-serif;
+      }
+      
+    </style>
+  </head>
+  <body style="margin: 0px; overflow: hidden;">
+    <div class="arjs-loader"><div>Loading, please wait...</div></div>
+    <a-scene
+      vr-mode-ui="enabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+      embedded
+      arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
+      <a-nft
+        type="nft"
+        url="aswara/one"
+        smooth="true"
+        smoothCount="1000"
+        smoothTolerance="0.1"
+        smoothThreshold="500">
+          <a-entity>
+            <a-image position="50 -100 -100" rotation="270 0 0" 
+            width="200" height="400" src="pop1.png"></a-image>
+          </a-entity>
+      </a-nft>
+      <a-nft
+        type="nft"
+        url="aswara/two"
+        smooth="true"
+        smoothCount="1000"
+        smoothTolerance="0.1"
+        smoothThreshold="500">
+          <a-entity>
+            <a-image position="50 -100 -100" rotation="270 0 0" 
+            width="200" height="400" src="pop2.png"></a-image>
+          </a-entity>
+      </a-nft>
+      <a-nft
+        type="nft"
+        url="aswara/three"
+        smooth="true"
+        smoothCount="1000"
+        smoothTolerance="0.1"
+        smoothThreshold="500">
+          <a-entity>
+            <a-image position="50 -100 -100" rotation="270 0 0" 
+            width="200" height="400" src="pop3.png"></a-image>
+          </a-entity>
+      </a-nft>
+      <a-entity camera='near:0.1; far: 50000' 
+      gps-camera="minDistance: 50; positionMinAccuracy: 300; gpsMinDistance: 5;" 
+      rotation-reader></a-entity>
+    </a-scene>
+  </body>
+</html>

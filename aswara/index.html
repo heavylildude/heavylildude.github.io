@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Historical Building</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;900&display=swap" rel="stylesheet">
+    <!-- <script src="a.js"></script> -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="b.js"></script>
+    <style>
+      * {
+        margin:  0;
+        padding: 0;
+        box-sizing: border-box;
+        font-size: 15px;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .arjs-loader {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .arjs-loader div {
+        text-align: center;
+        font-size: 1.25em;
+        color: white;
+        font-family: sans-serif;
+      }
+
+      .xx-loader {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .xx-loader div {
+        text-align: center;
+        font-size: 1.25em;
+        color: white;
+        font-family: sans-serif;
+      }
+
+     .thisthis {
+        position: fixed;
+        width: 100vw;
+        height: 80vh;
+        left: 0;
+        bottom: -110vh;
+        transition: bottom 0.7s;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center center;
+        display: block;
+        z-index: 99999;
+        padding: 20px;
+        padding-top: 26px;
+        overflow-y: scroll;
+        background-color: white;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: 0px -13px 21px -11px rgba(0, 0, 0, 0.5);
+-webkit-box-shadow: 0px -13px 21px -11px rgba(0, 0, 0, 0.5);
+      }
+
+      .thisthis img {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 2em;
+        text-transform: capitalize;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        font-weight: 900;
+      }
+
+      h2 {
+        font-size: 1.5em;
+        text-transform: uppercase;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      p {
+        line-height: 1.4em;
+        font-weight: 400;
+      }
+      #show1 {
+        display: none;
+        z-index: 9999;
+        /*background-image: url('pop1.png');*/
+      }
+
+      #show2 {
+        display: none;
+        z-index: 9999;
+        /*background-image: url('pop2.png');*/
+      }
+
+      #show3 {
+        display: none;
+        z-index: 9999;
+        /*background-image: url('pop3.png');*/
+      }
+      #xx {
+        display: block;
+      }
+    </style>
+    <script>
+     /* 
+    AFRAME.registerComponent('markerhandler1', {
+        init: function () {
+          this.el.sceneEl.addEventListener('markerFound', () => {
+            var check = this.el.getAttribute("url");
+// alert(check);
+            if (check == 'aswara/one') {
+              document.getElementById('show1').style.display = "block";
+              document.getElementById('show2').style.display = "none";
+              document.getElementById('show3').style.display = "none";
+            } else if (check == 'aswara/two') {
+              document.getElementById('show2').style.display = "block";
+               document.getElementById('show1').style.display = "none";
+              document.getElementById('show3').style.display = "none";
+            } else {
+             document.getElementById('show3').style.display = "block";
+              document.getElementById('show2').style.display = "none";
+              document.getElementById('show1').style.display = "none"; 
+            }
+
+          });
+          
+          this.el.sceneEl.addEventListener('markerLost', () => {
+            document.getElementById('show1').style.display = "none";
+              document.getElementById('show2').style.display = "none";
+              document.getElementById('show3').style.display = "none";
+            // var check = document.getElementById('that').className;
+            // if (check == 'on') {
+            //   document.getElementById('that').className = "off";
+            //   var x = document.getElementById('that');
+            //   x.pause();
+            // }
+              
+          });
+        }
+      });
+*/
+      // AFRAME.registerComponent('markerhandler', {
+      //   init: function () {
+      //     this.el.addEventListener('markerFound', () => {
+      //       var check = this.el.getAttribute("url");
+      //       // alert(check);
+      //       document.getElementById('show1').style.display = "block";
+      //       document.getElementById('show2').style.display = "none";
+      //       document.getElementById('show3').style.display = "none";
+      //     });
+          
+      //     this.el.addEventListener('markerLost', () => {
+      //       document.getElementById('show1').style.display = "none";
+      //       document.getElementById('show2').style.display = "none";
+      //       document.getElementById('show3').style.display = "none";
+      //     });
+      //   }
+      // });
+
+      AFRAME.registerComponent('markerhandler2', {
+        init: function () {
+          this.el.addEventListener('markerFound', () => {
+            var check = this.el.getAttribute("url");
+            // alert(check);
+            document.getElementById('show2').style.display = "block";
+            document.getElementById('show1').style.display = "none";
+            document.getElementById('show3').style.display = "none";
+          });
+          
+          this.el.addEventListener('markerLost', () => {
+            document.getElementById('show1').style.display = "none";
+            document.getElementById('show2').style.display = "none";
+            document.getElementById('show3').style.display = "none";
+          });
+        }
+      });
+
+      AFRAME.registerComponent('markerhandler3', {
+        init: function () {
+          this.el.addEventListener('markerFound', () => {
+            var check = this.el.getAttribute("url");
+            // alert(check);
+            document.getElementById('show3').style.display = "block";
+            document.getElementById('show1').style.display = "none";
+            document.getElementById('show2').style.display = "none";
+          });
+          
+          this.el.addEventListener('markerLost', () => {
+            document.getElementById('show1').style.display = "none";
+            document.getElementById('show2').style.display = "none";
+            document.getElementById('show3').style.display = "none";
+          });
+        }
+      });
+    </script>
+  </head>
+  <body style="margin: 0px; overflow: hidden;" onload="document.getElementById('xx').style.display='none'">
+    <div id="xx" class="xx-loader"><div>Loading, please wait...</div></div>
+    <div class="arjs-loader"><div>Loading, please wait...</div></div>
+    <a-scene
+      vr-mode-ui="enabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+      embedded
+      arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
+      <a-nft
+      markerhandler
+        type="nft"
+        url="aswara/one"
+        smooth="true"
+        smoothCount="100"
+        smoothTolerance=".1"
+        smoothThreshold="50">
+        <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+          <!-- <a-entity>
+            <a-image position="50 -200 -100" rotation="270 0 0" 
+            width="200" height="400" src="pop1.png"></a-image>
+          </a-entity> -->
+      </a-nft>
+      <a-nft
+      markerhandler2
+        type="nft"
+        url="aswara/two"
+        smooth="true"
+        smoothCount="100"
+        smoothTolerance=".1"
+        smoothThreshold="50">
+          <!-- <a-entity>
+            <a-image position="50 -200 -100" rotation="270 0 0" 
+            width="200" height="400" src="pop2.png"></a-image>
+          </a-entity> -->
+      </a-nft>
+      <a-nft
+      markerhandler3
+        type="nft"
+        url="aswara/three"
+        smooth="true"
+        smoothCount="100"
+        smoothTolerance=".1"
+        smoothThreshold="50">
+          <!-- <a-entity>
+            <a-image position="50 -200 -100" rotation="270 0 0" 
+            width="200" height="400" src="pop3.png"></a-image>
+          </a-entity> -->
+      </a-nft>
+      <!-- <a-entity camera='near:0.1; far: 50000' 
+      gps-camera="minDistance: 50; positionMinAccuracy: 300; gpsMinDistance: 5;" 
+      rotation-reader></a-entity> -->
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <a-scene id="show1">
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+
+    </a-scene>
+
+    <a-scene id="show2">
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+
+    </a-scene>
+
+    <a-scene id="show3">
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+
+    </a-scene>
+
+<!--     <div id="show1" class="thisthis">
+      <img src="mosque.jpg">
+      <h1>Masjid Jamek</h1>
+      <h2>JAMEK MOSQUE</h2>
+      <p>Masjid Jamek Sultan Abdul Samad asalnya telah dibina oleh pedagang-pedagang Islam yang berasal dari India di persimpangan Sungai Klang dan Sungai Gombak, Kuala Lumpur pada zaman penjajahan British. Kedudukannya berhampiran tapak perkuburan awal di situ dan kini terletak berhampiran dengan Dataran Merdeka, stesen Putra LRT dan Star LRT. Ia menjadi sebahagian daripada mercu tanda Kuala Lumpur sebagai Kota Kebudayaan Islam.</p>
+    </div>
+    <div id="show2" class="thisthis">
+      <img src="tugu.jpg">
+      <h1>Tugu Negara</h1>
+      <h2>NATIONAL MONUMENT</h2>
+      <p>Tugu Peringatan Negara (atau juga dikenali sebagai Tugu Negara) telah disempurnakan pada 8 Februari 1966 sebagai penghormatan kepada lebih 11 ribu perajurit yang gugur dalam Perang Dunia Pertama (1914-1918), Perang Dunia Kedua (1939-1945) dan semasa Darurat (1948-1960). Ia terletak di ibu negara, Kuala Lumpur berhampiran dengan bangunan Parlimen.<br><br>Pada setiap tahun, 11 November, satu perbarisan hormat akan diadakan di Tugu Negara. Tugu tersebut menggambarkan sekumpulan tentera mengibar bendera negara, Jalur Gemilang. Setiap patung gangsa tersebut melambangkan pimpinan, getir, persatuan, siap sedia, kekuatan, keberanian dan pengorbanan.<br><br>Dibina pada tahun 1966, tugu tersebut berdiri setinggi 15 meter, diperbuat daripada gangsa dan direka oleh pengukir Austria, Felix de Weldon yang bertanggungjawab bagi Tugu Peringatan Perang USMC (USMC War Memorial) di Virginia, Amerika Syarikat. Tugu ini juga adalah arca berkumpulan yang tertinggi di dunia.</p>
+    </div>
+    <div id="show3" class="thisthis">
+      <img src="bld.jpg">
+      <h1>Bangunan Sultan Abdul Samad</h1>
+      <h2>SULTAN ABDUL SAMAD BUILDING</h2>
+      <p>Bangunan Sultan Abdul Samad yang terletak di hadapan Dataran Merdeka adalah mercu tanda bagi bandar raya Kuala Lumpur, ibu negara Malaysia. Bangunan ini mengambil nama Sultan Abdul Samad, sempena nama Sultan Selangor pada masa ia mula dibina 1894.<br><br>Di hadapan bangunan indah ini beberapa peristiwa sejarah berlaku. Di sinilah tempat di mana bendera Union Jack diturunkan pada 31 Ogos 1957 dan bendera Jalur Gemilang dikibarkan. Peristiwa ini menunjukkan berlalulah satu era dijajah kepada era masyarakat yang merdeka.<br><br>Bangunan ini diwartakan sebagai Warisan Kebangsaan dalam kategori Tapak Warisan pada 2007 oleh Jabatan Warisan Negara, Kementerian Perpaduan, Kebudayaan, Kesenian dan Warisan Malaysia di bawah Akta 645.</p>
+    </div> -->
+  </body>
+</html>
