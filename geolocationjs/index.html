@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>GEO</title>
+	<style>
+		#beforeclick {
+			display: block;
+		}
+		#afterclick {
+			display: none;
+		}
+	</style>
+	</head>
+<body>
+<div id="beforeclick">
+	Where am I close to?
+	<button onclick="getLocation()">get my location</button>
+</div>
+
+<div id="afterclick">
+	you are closer to <div id="whereiam"></div>
+	<br><br>
+
+</div>
+
+<script>
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+	var lat = parseFloat(position.coords.latitude);
+	var long = parseFloat(position.coords.longitude);
+
+// 	var justtesting = document.createElement('div');
+// 	justtesting.innerHTML = lat + ' ' + long;
+// 	document.body.appendChild(justtesting);
+
+	/* look for lat, long in google maps ie: */
+	/* https://www.google.com/maps/@-6.26288,106.621542,19z */
+	/* https://www.google.com/maps/place/Pondok+Indah+Mall/@-6.2655371,106.784339,17z */
+	/* after @ == -6.2655371 is lat, 106.784339 is long, 17z is google map zoom level */
+
+	var sms_lat = -6.2427087;
+	var sms_long = 106.63131;
+
+	var sency_lat = -6.2267195;
+	var sency_long = 106.795604;
+
+	var pim_lat = -6.2655371;
+	var pim_long = 106.784339;
+	
+	var umn_lat = -6.2630063;
+	var umn_long = 106.6214072;
+
+	//alert(getDistance(lat,long,sms_lat,sms_long) + ' ' + getDistance(lat,long,sency_lat,sency_long) + ' ' + getDistance(lat,long,pim_lat,pim_long) + ' ' + getDistance(lat,long,umn_lat,umn_long));
+	var distance_arr = [
+	  getDistance(lat,long,sms_lat,sms_long), 
+	  getDistance(lat,long,sency_lat,sency_long), 
+	  getDistance(lat,long,pim_lat,pim_long), 
+	  getDistance(lat,long,umn_lat,umn_long)
+	];
+
+	//alert(closest(distance_arr, 0));
+	var xx = closest(distance_arr, 0);
+	if (xx == getDistance(lat,long,sms_lat,sms_long)) {
+		var i = 'SMS';
+	} else if (xx == getDistance(lat,long,sency_lat,sency_long)) {
+		var i = 'Senayan City';
+	} else if (xx == getDistance(lat,long,umn_lat,umn_long)) {
+		var i = 'UMN';
+	} else {
+		var i = 'PIM';
+	}
+
+	document.getElementById('beforeclick').style.display = "none";
+	document.getElementById('afterclick').style.display = "block";
+	document.getElementById('whereiam').innerHTML = i;
+
+}
+
+function closest(array, num) {
+  var i = 0;
+  var minDiff = 1000;
+  var ans;
+  for (i in array) {
+    var m = Math.abs(num - array[i]);
+    if (m < minDiff) {
+      minDiff = m;
+      ans = array[i];
+    }
+  }
+  return ans;
+}
+
+function getDistance(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+
+</script>
+
+</body>
+</html>
