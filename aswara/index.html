@@ -125,7 +125,7 @@
       }
     </style>
     <script>
-     /* 
+     
     AFRAME.registerComponent('markerhandler1', {
         init: function () {
           this.el.sceneEl.addEventListener('markerFound', () => {
@@ -151,34 +151,34 @@
             document.getElementById('show1').style.display = "none";
               document.getElementById('show2').style.display = "none";
               document.getElementById('show3').style.display = "none";
-            // var check = document.getElementById('that').className;
-            // if (check == 'on') {
-            //   document.getElementById('that').className = "off";
-            //   var x = document.getElementById('that');
-            //   x.pause();
-            // }
+            var check = document.getElementById('that').className;
+            if (check == 'on') {
+              document.getElementById('that').className = "off";
+              var x = document.getElementById('that');
+              x.pause();
+            }
               
           });
         }
       });
-*/
-      // AFRAME.registerComponent('markerhandler', {
-      //   init: function () {
-      //     this.el.addEventListener('markerFound', () => {
-      //       var check = this.el.getAttribute("url");
-      //       // alert(check);
-      //       document.getElementById('show1').style.display = "block";
-      //       document.getElementById('show2').style.display = "none";
-      //       document.getElementById('show3').style.display = "none";
-      //     });
+
+      AFRAME.registerComponent('markerhandler', {
+        init: function () {
+          this.el.addEventListener('markerFound', () => {
+            var check = this.el.getAttribute("url");
+            // alert(check);
+            document.getElementById('show1').style.display = "block";
+            document.getElementById('show2').style.display = "none";
+            document.getElementById('show3').style.display = "none";
+          });
           
-      //     this.el.addEventListener('markerLost', () => {
-      //       document.getElementById('show1').style.display = "none";
-      //       document.getElementById('show2').style.display = "none";
-      //       document.getElementById('show3').style.display = "none";
-      //     });
-      //   }
-      // });
+          this.el.addEventListener('markerLost', () => {
+            document.getElementById('show1').style.display = "none";
+            document.getElementById('show2').style.display = "none";
+            document.getElementById('show3').style.display = "none";
+          });
+        }
+      });
 
       AFRAME.registerComponent('markerhandler2', {
         init: function () {
@@ -286,7 +286,7 @@
 
     </a-scene>
 
-<!--     <div id="show1" class="thisthis">
+ <div id="show1" class="thisthis">
       <img src="mosque.jpg">
       <h1>Masjid Jamek</h1>
       <h2>JAMEK MOSQUE</h2>
@@ -303,6 +303,6 @@
       <h1>Bangunan Sultan Abdul Samad</h1>
       <h2>SULTAN ABDUL SAMAD BUILDING</h2>
       <p>Bangunan Sultan Abdul Samad yang terletak di hadapan Dataran Merdeka adalah mercu tanda bagi bandar raya Kuala Lumpur, ibu negara Malaysia. Bangunan ini mengambil nama Sultan Abdul Samad, sempena nama Sultan Selangor pada masa ia mula dibina 1894.<br><br>Di hadapan bangunan indah ini beberapa peristiwa sejarah berlaku. Di sinilah tempat di mana bendera Union Jack diturunkan pada 31 Ogos 1957 dan bendera Jalur Gemilang dikibarkan. Peristiwa ini menunjukkan berlalulah satu era dijajah kepada era masyarakat yang merdeka.<br><br>Bangunan ini diwartakan sebagai Warisan Kebangsaan dalam kategori Tapak Warisan pada 2007 oleh Jabatan Warisan Negara, Kementerian Perpaduan, Kebudayaan, Kesenian dan Warisan Malaysia di bawah Akta 645.</p>
-    </div> -->
+    </div> 
   </body>
 </html>
