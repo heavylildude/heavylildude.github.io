@@ -1,0 +1,11 @@
+Model Information:
+* title:	Mesón de trabajo medieval
+* source:	https://sketchfab.com/3d-models/meson-de-trabajo-medieval-9e03a70fed9741049ffd67a260017e9e
+* author:	Cata_Seron1010 (https://sketchfab.com/Cata_Seron1010)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Mesón de trabajo medieval" (https://sketchfab.com/3d-models/meson-de-trabajo-medieval-9e03a70fed9741049ffd67a260017e9e) by Cata_Seron1010 (https://sketchfab.com/Cata_Seron1010) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
