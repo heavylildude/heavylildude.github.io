@@ -38,15 +38,15 @@ function showPosition(position) {
 	var lat = parseFloat(position.coords.latitude);
 	var long = parseFloat(position.coords.longitude);
 
-// 	var justtesting = document.createElement('div');
-// 	justtesting.innerHTML = lat + ' ' + long;
-// 	document.body.appendChild(justtesting);
+ 	var justtesting = document.createElement('div');
+ 	justtesting.innerHTML = lat + ' ' + long;
+ 	document.body.appendChild(justtesting);
 
 	/* look for lat, long in google maps ie: */
 	/* https://www.google.com/maps/@-6.26288,106.621542,19z */
 	/* https://www.google.com/maps/place/Pondok+Indah+Mall/@-6.2655371,106.784339,17z */
 	/* after @ == -6.2655371 is lat, 106.784339 is long, 17z is google map zoom level */
-
+/*
 	var sms_lat = -6.2427087;
 	var sms_long = 106.63131;
 
@@ -82,7 +82,7 @@ function showPosition(position) {
 	document.getElementById('beforeclick').style.display = "none";
 	document.getElementById('afterclick').style.display = "block";
 	document.getElementById('whereiam').innerHTML = i;
-
+*/
 }
 
 function closest(array, num) {
