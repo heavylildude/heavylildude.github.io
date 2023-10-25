@@ -126,7 +126,7 @@ function showPosition(position) {
 
 function closest(array, num) {
   var i = 0;
-  var minDiff = 1;
+  var minDiff = 100;
   var ans;
   for (i in array) {
     var m = Math.abs(num - array[i]);
