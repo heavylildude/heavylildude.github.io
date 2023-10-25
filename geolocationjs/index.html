@@ -31,8 +31,7 @@
     navigator.geolocation.getCurrentPosition(showPosition);
   } else { 
     x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
+  }}
 
 function showPosition(position) {
 	var lat = parseFloat(position.coords.latitude);
@@ -84,7 +83,16 @@ function showPosition(position) {
 	var pim_lat = -6.2655371;
 	var pim_long = 106.784339; */
 
-
+alert('entrance ' + getDistance(lat,long,entrance_lat,entrance_long) + ' ' +
+	  '\nmac ' + getDistance(lat,long,maclab_lat,maclab_long)+ ' ' +
+	  '\npc ' + getDistance(lat,long,pclab_lat,pclab_long)+ ' ' + 
+	  '\ncentral ' + getDistance(lat,long,centralcommand_lat,centralcommand_long)+ ' ' + 
+	  '\nfashion ' +  getDistance(lat,long,fashionlab_lat,fashionlab_long)+ ' ' +
+	  '\ntoilet ' + getDistance(lat,long,toilet_lat,toilet_long)+ ' ' +
+	  '\nlibrary ' + getDistance(lat,long,library_lat,library_long)+ ' ' +
+	  '\nlounge ' + getDistance(lat,long,lounge_lat,lounge_long)+ ' ' +
+	  '\nsas ' + getDistance(lat,long,sas_lat,sas_long));
+		
 	var distance_arr = [
 	  getDistance(lat,long,entrance_lat,entrance_long),
 	  getDistance(lat,long,maclab_lat,maclab_long),
@@ -126,7 +134,7 @@ function showPosition(position) {
 
 function closest(array, num) {
   var i = 0;
-  var minDiff = 100;
+  var minDiff = 1000;
   var ans;
   for (i in array) {
     var m = Math.abs(num - array[i]);
@@ -139,7 +147,7 @@ function closest(array, num) {
 }
 
 function getDistance(lat1,lon1,lat2,lon2) {
-  var R = 6371000; // Radius of the earth in km
+  var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
   var dLon = deg2rad(lon2-lon1); 
   var a = 
