@@ -5,7 +5,16 @@
   function aaa() {
     var recipient_no = "+62" + document.getElementById('recipient_no').value;
     var recipient_name = document.getElementById('recipient_name').value;
-    var url_link = "https://heavylildude.github.io/wa/message.html?_=" + recipient_name;
+    var outputStr = ''; 
+    for (let i = 0; i < recipient_name.length; i++) { 
+        if (recipient_name[i] === ' ') { 
+            outputStr += '%20'; 
+        } else { 
+            outputStr += inputStr[i]; 
+        } 
+    } 
+
+    var url_link = "https://heavylildude.github.io/wa/message.html?_=" + outputStr;
     var message_tosend = 'Hello ' + recipient_name + ' %0a%0aPlease open this link to see your message %0a%0a' + url_link;
 
     window.open("http://wa.me/" + recipient_no + "?text=" +  message_tosend,"_blank");
