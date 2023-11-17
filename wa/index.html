@@ -5,7 +5,8 @@
   function aaa() {
     var recipient_no = "+62" + document.getElementById('recipient_no').value;
     var recipient_name = document.getElementById('recipient_name').value;
-    var url_link = "https://heavylildude.github.io/wa/message.html?_=" + recipient_name;
+    var outputStr = recipient_name.replace(/ /g, '%20');
+    var url_link = "https://heavylildude.github.io/wa/message.html?_=" + outputStr;
     var message_tosend = 'Hello ' + recipient_name + ' %0a%0aPlease open this link to see your message %0a%0a' + encodeURI(url_link);
 
     window.open("http://wa.me/" + recipient_no + "?text=" +  message_tosend,"_blank");
