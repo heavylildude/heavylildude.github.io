@@ -1,0 +1,24 @@
+<script>
+    AFRAME.registerComponent('alpha-test', {
+      dependencies: ['material'],
+      init: function () {
+        this.el.getObject3D('mesh').material.alphaTest = 0.5;
+      }
+    });
+</script>
+
+<a-entity id="target" position="0 0 0">
+    <a-box small-top position="0 0.75 0" rotation="0 0 0" width="0.5" height="0.5" depth="0.5" color="#FF00CC" src="assets/texture/mars-txtr-glass.svg" color="#FF00CC"
+    light="type: spot; angle: 180; color: #FF00CC; intensity: 0.05" ></a-box>
+
+    <a-image left position = "-0.6 0 0" rotation="0 -90 0" width="1" height="1" src="assets/texture/press-t-txt.png" transparent="true" alpha-test="0.5"></a-image>
+    <a-image right position = "0.6 0 0" rotation="0 90 0" width="1" height="1" src="assets/texture/press-t-txt.png" transparent="true" alpha-test="0.5"></a-image>
+    <a-image front position = "0 0 0.6" rotation="0 0 0" width="1" height="1" src="assets/texture/press-t-txt.png" transparent="true" alpha-test="0.5"></a-image>
+    <a-image back position = "0 0 -0.6" rotation="0 180 0" width="1" height="1" src="assets/texture/press-t-txt.png" transparent="true" alpha-test="0.5"></a-image>
+
+    <a-box position="0 0 0" rotation="0 0 0" width="1" height="1" depth="1" color="#FF00CC" src="assets/texture/mars-txtr-glass.svg" color="#FF00CC"
+    light="type: spot; angle: 180; color: #FF00CC; intensity: 0.05" ></a-box>
+
+    <a-box small-bottom position="0 -0.75 0" rotation="0 0 0" width="0.5" height="0.5" depth="0.5" color="#FF00CC" src="assets/texture/mars-txtr-glass.svg" color="#FF00CC"
+    light="type: spot; angle: 180; color: #FF00CC; intensity: 0.05" ></a-box>
+<a-entity>

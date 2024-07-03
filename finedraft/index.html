@@ -1,0 +1,609 @@
+<html>
+    <head>
+        <title>Finedraft!</title>
+        <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+        <script src="https://unpkg.com/aframe-extras@5.0.0/dist/aframe-extras.min.js"></script>
+        <script src="https://unpkg.com/aframe-physics-system@3.3.0/dist/aframe-physics-system.min.js"></script>
+        <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script>
+        <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
+        <script src="https://unpkg.com/aframe-gif-shader@0.2.0/dist/aframe-gif-shader.js"></script>
+        <script src="js/instanced-mesh.js"></script>
+        <script src="js/stats.js"></script>
+        <link rel="shortcut icon" href="assets/img/favicon_png.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <style>
+            .fl-light {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                z-index: 2;
+                pointer-events: none;
+                background-image: url(assets/texture/mars-flashlight.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                display: block;
+            }
+
+            .fl-light-off {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                z-index: 2;
+                pointer-events: none;
+                background-color: black;
+                opacity: 0.9;
+                display: block;
+            }
+
+            .timer-box {
+                position: fixed;
+                top: 30px;
+                right: 30px;
+                width: 100px;
+                height: 50px;
+                z-index: 3;
+            }
+
+            #time {
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+                font-size: 40px;
+                font-weight: 400;
+                text-align: center;
+                vertical-align: center;
+                color: white;
+            }
+
+            .mission {
+                position: fixed;
+                width: 300px;
+                height: 150px;
+                top: calc(40% - 100px);
+                left: 40px;
+                z-index: 5;
+            }
+
+            .wasd-cont {
+                position: fixed;
+                width: 250;
+                height: 280;
+                left: 40px;
+                bottom: 40px;
+                z-index: 5;
+            }
+
+            .mouse-cont {
+                position: fixed;
+                width: 250;
+                height: 280;
+                right: 40px;
+                bottom: 40px;
+                z-index: 5;
+            }
+
+        </style>
+    </head>
+    <body>
+        <!--stats: this is for monitoring the FPS drop when our computer play this game, the window will pop in the top-left corner,
+        the stat is containing 3 kind of statistics, fps, megabites (keknya cache, dont know), and ping rate (probably)-->
+        <script>
+        var stats = new Stats();
+        stats.showPanel(0); //0:fps, 1:ms, 2:mb, 3+:custom
+        document.body.appendChild(stats.dom);
+
+        function animate() {
+            stats.begin();
+
+            //monitored code between this called function;
+
+            stats.end();
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+        </script>
+
+        <a-scene do-something background="color: #D3D3D3;" renderer="antialias: true; gammaOutput: false;"
+		light="defaultLightsEnabled: true;" physics="debug: false; restitution: 10;">
+            <!--assets: here, the 'assets' is just rows to contain a collition bump animation, when the camera is falling down real hard,
+            it will bounce a little (this will happen if the floor is 100% rendered)-->
+            <a-assets>
+                <a-mixin id="box-bump"
+                animation__bump="property: object3D.position.y; from: 0; to: 0.2; dur: 200; dir: alternate; loop: 1; startEvents: click, collide;">
+                </a-mixin>
+            </a-assets>
+
+            <!--camera: this controls the camera setting, from position (see 'posiiton'), movement speed, jump setting, jump distance, and pointer lock.
+            Here, the pointer lock is one of the important part, it allows the cursor to fuse together with the camera (so the user can move the cursor together
+            with the camera at the same time). There's one downside when using this pointer lock, it won't allow the cursos to interact with 'fuse' function
+            with elements in the game, but don't worry, this will be solved in other way.-->
+            <a-entity id="rig" position="0 35 5" movement-controls="speed: 0.3;" kinematic-body="enableJumps: true;"
+            jump-ability="distance: 2;" tracker>
+                <a-entity id="camera" camera="far: 100;" wasd-controls="enabled: false;" look-controls="pointerLockEnabled: true;"
+                position="0 1.6 0">
+
+                <a-cursor fuse="false" raycaster="objects: [data-interactive]; far: 1;"></a-cursor>
+
+                </a-entity>
+            </a-entity>
+
+            <!--flashlight: this is just where we put the black overlay as a flashlight-->
+            <div class="fl-light"></div>
+            <div id="off" class="fl-light-off"></div>
+
+            <!--timer: this is just the layout setting of the timer (top-right corner)-->
+            <div class="timer-box">
+                <span id="time">01:00</span>
+            </div>
+            
+            <!--this script is for the timer to function. the setting is using if variable to set the 'losing condition' and 'winning condition'.
+            the big concept here is to use the 'setInterval' function to count the time down.-->
+            <script>
+                var crystal = document.querySelector('#crystal');
+                function startTimer(duration, display) {
+                    var timer = duration, minutes, seconds;
+                    setInterval(function () {
+                        minutes = parseInt(timer / 60, 10);
+                        seconds = parseInt(timer % 60, 10);
+                
+                        minutes = minutes < 10 ? "0" + minutes : minutes;
+                        seconds = seconds < 10 ? "0" + seconds : seconds;
+                
+                        display.textContent = minutes + ":" + seconds;
+                
+                        if (--timer < 0) {
+                            timer = duration;
+                            location.replace('mars-m3-lobby.php?page=lose');
+                        }
+                    }, 1000);
+                }
+                
+                window.onload = function () {
+                    var ThirtyFive = 60,
+                        display = document.querySelector('#time');
+                    startTimer(ThirtyFive, display);
+                };
+
+                crystal.addEventListener('fusing', function(evt) {
+                    location.replace('mars-m3-lobby.php?page=win');
+                });
+            </script>
+
+            <!--instruction-->
+            <div class="mission" style="background-image: url('assets/img/mission.png');
+            background-size: cover; background-repeat: no-repeat;"></div>
+            <div class="wasd-cont" style="background-image: url('assets/img/wasd.png');
+            background-size: cover; background-repeat: no-repeat;"></div>
+            <div class="mouse-cont" style="background-image: url('assets/img/cursor.png');
+            background-size: cover; background-repeat: no-repeat;"></div>
+
+            <!--this section is for the world in the game (?) layout of plane, boxes, texture, and stuffs. Here, we use our own library, the library is located
+            in the 'assets/' folder. so here we just call out the html with command 'template'. Besides that, there's also one thing important, every element uses
+            'static-body' to give the effect of hard surface or solid object.-->
+            <!--pit-->
+            <a-entity>
+                <!--floor-->
+                <a-entity template="src: assets/plane-carbon-25x25.html;" position="0 -25 0" rotation="-90 0 0" static-body></a-entity>
+
+                <!--metane-->
+                <a-entity position="0 12.5 0" rotation="0 0 0">
+                <!--back-->
+                    <a-entity static-body template="src: assets/plane-metane-25x25.html;" position="0 0 -12.5" rotation="0 0 0"></a-entity>
+                <!--front-->
+                    <a-entity static-body template="src: assets/plane-metane-25x25.html;" position="0 0 12.5" rotation="0 180 0"></a-entity>
+                <!--right-->
+                    <a-entity static-body template="src: assets/plane-metane-25x25.html;" position="12.5 0 0" rotation="0 -90 0"></a-entity>
+                <!--left-->
+                    <a-entity static-body template="src: assets/plane-metane-25x25.html;" position="-12.5 0 0" rotation="0 90 0"></a-entity>
+                </a-entity>
+
+                <!--deepest layer-->
+                <a-entity position="0 -12.5 0" rotation="0 0 0">
+                <!--back-->
+                <a-entity static-body template="src: assets/plane-carbon-25x25.html;" position="0 0 -12.5" rotation="0 0 0"></a-entity>
+                <!--front-->
+                <a-entity static-body template="src: assets/plane-carbon-25x25.html;" position="0 0 12.5" rotation="0 180 0"></a-entity>
+                <!--right-->
+                <a-entity static-body template="src: assets/plane-carbon-25x25.html;" position="12.5 0 0" rotation="0 -90 0"></a-entity>
+                <!--left-->
+                <a-entity static-body template="src: assets/plane-carbon-25x25.html;" position="-12.5 0 0" rotation="0 90 0"></a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!--'obs' means obstacle, so from here the code is divided by levels of the pit (?)-->
+            <!--obs_lv1-->
+            <a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" position="-0.5 -24.5 0" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="1.5 -24 0" rotation="-90 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x3.html;" position="3.5 -23.5.5 0" rotation="-90 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x3.html;" position="7 -23.5.5 0" rotation="-90 0 0" static-body></a-entity>
+                <!--rock base-->
+                <a-entity left geometry="primitive: plane; width: 11; height: 4;"
+                          position="11.5 -23 -6"
+                          rotation="0 -90 0"
+                          material="src: assets/texture/mars-txtr-carbon.svg; repeat: 11 4;"
+                          static-body></a-entity>
+                <a-entity left geometry="primitive: plane; width: 1; height: 4;"
+                          position="12 -23 -0.5"
+                          rotation="0 0 0"
+                          material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 4;"
+                          static-body></a-entity>
+                <a-entity left geometry="primitive: plane; width: 2; height: 4;"
+                          position="10.5 -23 -11.5"
+                          rotation="0 0 0"
+                          material="src: assets/texture/mars-txtr-carbon.svg; repeat: 2 4;"
+                          static-body></a-entity>
+                <a-entity left geometry="primitive: plane; width: 2; height: 4;"
+                          position="9.5 -23 -12.5"
+                          rotation="0 -90 0"
+                          material="src: assets/texture/mars-txtr-carbon.svg; repeat: 2 4;"
+                          static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x3.html;" position="6 -21.5 0" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x3.html;" position="9 -21.5 0" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="12 -20.5 -2.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="12 -20.5 -6.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="12 -20.5 -8.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="12 -20.5 -11.5" rotation="0 0 0" static-body></a-entity>
+            </a-entity>
+
+            <!--obs_lv2-->
+            <a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="10.5 -20.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="5.5 -20.5 -11.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x3.html;" position="0.5 -20.5 -11" rotation="0 0 0" static-body></a-entity>
+                <!--steel base-->
+                <a-entity geometry="primitive: plane; width: 1; height: 4;"
+                          position="0.5 -23 -9.5"
+                          rotation="0 0 0"
+                          material="src: assets/texture/mars-txtr-steel.svg; repeat: 1 4;"
+                          static-body></a-entity>
+                <a-entity geometry="primitive: plane; width: 1; height: 4;"
+                          position="0 -23 -10"
+                          rotation="0 -90 0"
+                          material="src: assets/texture/mars-txtr-steel.svg; repeat: 1 4;"
+                          static-body></a-entity>
+                <a-entity geometry="primitive: plane; width: 1; height: 4;"
+                          position="1 -23 -10"
+                          rotation="0 90 0"
+                          material="src: assets/texture/mars-txtr-steel.svg; repeat: 1 4;"
+                          static-body></a-entity>
+                <a-entity geometry="primitive: plane; width: 1; height: 4;"
+                          position="0.5 -23 -10.5"
+                          rotation="0 180 0"
+                          material="src: assets/texture/mars-txtr-steel.svg; repeat: 1 4;"
+                          static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" position="0.5 -18.5 -10" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="0.5 -18.5 -7" rotation="0 0 0"
+                animation="property: position; to: 0.5 -18.5 5; loop: true; dur: 3000; dir: alternate;" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="0.5 -18.5 8" rotation="0 0 0" static-body></a-entity>
+                <!--steel base-->
+                <a-entity geometry="primitive: plane; width: 2; height: 6;"
+                          position="0 -22 8"
+                          rotation="0 -90 0"
+                          material="src: assets/texture/mars-txtr-steel.svg; repeat: 2 6;"
+                          static-body></a-entity>
+                <a-entity geometry="primitive: plane; width: 2; height: 6;"
+                          position="1 -22 8"
+                          rotation="0 90 0"
+                          material="src: assets/texture/mars-txtr-steel.svg; repeat: 2 6;"
+                          static-body></a-entity>
+                <a-entity geometry="primitive: plane; width: 1; height: 6;"
+                          position="0.5 -22 9"
+                          rotation="0 0 0"
+                          material="src: assets/texture/mars-txtr-steel.svg; repeat: 1 6;"
+                          static-body></a-entity>
+                <a-entity geometry="primitive: plane; width: 1; height: 6;"
+                          position="0.5 -22 7"
+                          rotation="0 180 0"
+                          material="src: assets/texture/mars-txtr-steel.svg; repeat: 1 6;"
+                          static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="1 -18.5 11" rotation="0 0 0" 
+                animation="property: position; to: 1 -12.5 11; loop: true; dur: 4000; dir: alternate;" static-body></a-entity>
+            </a-entity>
+
+            <!--obs_lv3-->
+            <a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="1.5 -12.5 8" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" position="1.5 -12.5 2.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" position="1.5 -12.5 -2.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" position="1.5 -12.5 -5.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" position="1.5 -12.5 -9" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" animation="property: position; to: 1.5 -1.5 -10; loop: true; dur: 2000; dir: alternate;"
+                position="1.5 -12.5 -10" rotation="0 0 0" static-body></a-entity>
+            </a-entity>
+
+            <!--obs_lv4-->
+            <a-entity>
+                <a-entity A template="src: assets/steel-1x1x4.html;" position="-10.5 -1.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity B template="src: assets/steel-1x1x4.html;" position="-6.5 -1.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity C template="src: assets/steel-1x1x4.html;" position="-2.5 -1.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-12 -1.5 -9.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-12 -1.5 -5.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-12 -1.5 -1.5" rotation="0 0 0" static-body></a-entity>
+                <!--rock base-->
+                <a-entity A>
+                    <a-entity A geometry="primitive: plane; width: 2; height: 3;"
+                              position="-10.5 -3.5 -11.5"
+                              rotation="0 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 2 3;"
+                              static-body></a-entity>
+                    <a-entity A geometry="primitive: plane; width: 1; height: 4;"
+                              position="-9 -4 -11.5"
+                              rotation="0 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 4;"
+                              static-body></a-entity>
+                    <a-entity A geometry="primitive: plane; width: 1; height: 1;"
+                              position="-9 -6 -12"
+                              rotation="90 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 1;"
+                              static-body></a-entity>
+                    <a-entity A geometry="primitive: plane; width: 1; height: 1;"
+                              position="-9.5 -5.5 -12"
+                              rotation="0 -90 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 1;"
+                              static-body></a-entity>
+                    <a-entity A geometry="primitive: plane; width: 2; height: 1;"
+                              position="-10.5 -5 -12"
+                              rotation="90 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 2 1;"
+                              static-body></a-entity>
+                    <a-entity A geometry="primitive: plane; width: 1; height: 3;"
+                              position="-8.5 -4.5 -12"
+                              rotation="0 90 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 3;"
+                              static-body></a-entity>
+                </a-entity>
+                <a-entity B>
+                    <a-entity B geometry="primitive: plane; width: 1; height: 1;"
+                              position="-8 -2.5 -11.5"
+                              rotation="0 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 1;"
+                              static-body></a-entity>
+                    <a-entity B geometry="primitive: plane; width: 1; height: 4;"
+                              position="-7 -4 -11.5"
+                              rotation="0 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 4;"
+                              static-body></a-entity>
+                    <a-entity B geometry="primitive: plane; width: 2; height: 3;"
+                              position="-5.5 -3.5 -11.5"
+                              rotation="0 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 2 3;"
+                              static-body></a-entity>
+                    <a-entity B geometry="primitive: plane; width: 2; height: 1;"
+                              position="-5.5 -5 -12"
+                              rotation="90 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 2 3;"
+                              static-body></a-entity>
+                    <a-entity B geometry="primitive: plane; width: 1; height: 1;"
+                              position="-7 -6 -12"
+                              rotation="90 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 1;"
+                              static-body></a-entity>
+                    <a-entity B geometry="primitive: plane; width: 1; height: 1;"
+                              position="-6.5 -5.5 -12"
+                              rotation="0 90 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 1;"
+                              static-body></a-entity>
+                    <a-entity B geometry="primitive: plane; width: 1; height: 1;"
+                              position="-8 -3 -12"
+                              rotation="90 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 1;"
+                              static-body></a-entity>
+                    <a-entity B geometry="primitive: plane; width: 1; height: 3;"
+                              position="-7.5 -4.5 -12"
+                              rotation="0 -90 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 3;"
+                              static-body></a-entity>
+                </a-entity>
+                <a-entity C>
+                    <a-entity C geometry="primitive: plane; width: 1; height: 6;"
+                              position="-4 -5 -11.5"
+                              rotation="0 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 6;"
+                              static-body></a-entity>
+                    <a-entity C geometry="primitive: plane; width: 1; height: 5;"
+                              position="-3.5 -5.5 -12"
+                              rotation="0 90 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 5;"
+                              static-body></a-entity>
+                    <a-entity C geometry="primitive: plane; width: 1; height: 1;"
+                              position="-4 -8 -12"
+                              rotation="90 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 1;"
+                              static-body></a-entity>
+                    <a-entity C geometry="primitive: plane; width: 2; height: 1;"
+                              position="-2.5 -2.5 -11.5"
+                              rotation="0 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 2 1;"
+                              static-body></a-entity>
+                    <a-entity C geometry="primitive: plane; width: 2; height: 1;"
+                              position="-2.5 -3 -12"
+                              rotation="90 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 2 1;"
+                              static-body></a-entity>
+                    <a-entity C geometry="primitive: plane; width: 1; height: 4;"
+                              position="-1 -4 -11.5"
+                              rotation="0 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 4;"
+                              static-body></a-entity>
+                    <a-entity C geometry="primitive: plane; width: 1; height: 4;"
+                              position="-0.5 -4 -12"
+                              rotation="0 90 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 4;"
+                              static-body></a-entity>
+                    <a-entity C geometry="primitive: plane; width: 1; height: 3;"
+                              position="-1.5 -4.5 -12"
+                              rotation="0 -90 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 4;"
+                              static-body></a-entity>
+                    <a-entity C geometry="primitive: plane; width: 1; height: 1;"
+                              position="-1 -6 -12"
+                              rotation="90 0 0"
+                              material="src: assets/texture/mars-txtr-carbon.svg; repeat: 1 1;"
+                              static-body></a-entity>
+                </a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-9.5 -1.5 0" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="-4.5 -0.5 -0.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="-2.5 1.5 -0.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="-0.5 3.5 -0.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="2.5 4.5 -0.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="4.5 1.5 -0.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="7.5 -2.5 -0.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="10.5 -0.5 -0.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" animation="property: position; to: 12 11.5 -0.5; loop: true; dur: 3000; dir: alternate;"
+                position="12 -0.5 -0.5" rotation="0 0 0" static-body></a-entity>
+            </a-entity>
+
+            <!--obs_lv5-->
+            <a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="12 11.5 -10.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="12 11.5 -6.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="12 11.5 -3.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="9.5 11.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="5.5 11.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="1.5 11.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-2.5 11.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-6.5 11.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x1.html;" position="-9 11.5 -12" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-12 11.5 -9.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-12 11.5 -5.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-12 11.5 -1.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-12 11.5 2.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="-12 11.5 4.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-9.5 11.5 5" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x4.html;" position="-5.5 11.5 5" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-3x1x3.html;" position="0 13.5 5" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-3x1x3.html;" position="3 13.5 5" rotation="0 90 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="4.5 15.5 4.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="6.5 17.5 4.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="8.5 19.5 4.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="10.5 21.5 4.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/steel-1x1x2.html;" position="8.5 23.5 2.5" rotation="0 0 0" static-body></a-entity>
+            </a-entity>
+
+            <!--top-->
+            <a-entity position="0 0.5 0">
+                <a-entity template="src: assets/surf-25x1x50.html;" position="-6.5 25 0" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/surf-25x1x19.html;" position="18.5 25 15.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/surf-25x1x25.html;" position="18.5 25 -12.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/surf-16x1x6.html;" position="21.5 25 3" rotation="0 0 0" static-body></a-entity>
+            </a-entity>
+
+            <!--staltop (no use)
+            <a-entity position="0 -0.5 0">
+                <a-entity template="src: assets/stal-large.html;" position="0 25 0" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-large.html;" position="0 25 -8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="-4 25 -8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="4 25 -8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="6 25 -8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="-4 25 -6" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="8 25 -3" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="4 25 -3" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="-3 25 -3" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="6 25 -3" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="3 25 0" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="0 25 -4" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="4 25 10" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="0 25 10" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-large.html;" position="0 25 8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="-3 25 8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="-5 25 8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="-5 25 10" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="-4 25 0" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-large.html;" position="-8 25 0" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="-10 25 0" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="-8 25 -4" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="-8 25 -8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="-10 25 -8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="-8 25 -8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="-8 25 4" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="-6 25 4" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="-10 25 8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-large.html;" position="10 25 10" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="10 25 8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med.html;" position="10 25 -4" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="10 25 -2" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-large.html;" position="10 25 -8" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-smallest.html;" position="0 25 2" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="0 25 4" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="4 25 6" rotation="180 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small.html;" position="-8 25 10" rotation="180 0 0" static-body></a-entity>
+            </a-entity>
+            -->
+
+            <!--stalbottom-->
+            <a-entity>
+                <a-entity template="src: assets/stal-smallest-carbon.html;" position="-8 -25 0" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x1.html;" position="-6 -24.5 0" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x1.html;" position="-7 -24.5 4" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x1.html;" position="-2 -24.5 2" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x1.html;" position="4 -24.5 3" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x1.html;" position="6 -24.5 2" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x1.html;" position="-4 -24.5 -5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x1.html;" position="1 -24.5 -3" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x2.html;" position="-7 -24 -6" rotation="-90 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x2.html;" position="-4 -24 -4" rotation="-90 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x2.html;" position="5 -24 -5" rotation="-90 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x2.html;" position="4 -24 7" rotation="-90 0 0" static-body></a-entity>
+                <a-entity template="src: assets/carbon-1x1x2.html;" position="-5 -24 6" rotation="-90 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-large-carbon.html;" position="-11 -25 -10.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med-carbon.html;" position="-8 -25 -10.5" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small-carbon.html;" position="-5 -25 -8" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med-carbon.html;" position="6 -25 -8" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med-carbon.html;" position="9 -25 9" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-med-carbon.html;" position="-8 -25 10" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small-carbon.html;" position="8 -25 6" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-small-carbon.html;" position="-10 -25 6" rotation="0 0 0" static-body></a-entity>
+                <a-entity template="src: assets/stal-large-carbon.html;" position="-4 -25 10" rotation="0 0 0" static-body></a-entity>
+            </a-entity>
+
+            <!--to mimic the water in real world, we use animation effect (moving element)-->
+            <!--water-->
+            <a-entity>
+                <a-entity left geometry="primitive: plane; width: 40; height: 40;"
+                          position="5 -24.5 0"
+                          rotation="-90 0 0"
+                          material="src: assets/texture/mars-txtr-water.svg; repeat: 40 40; opacity: 0.4;"
+                          animation="property: position; to: -5 -24.5 0; loop: true; dur: 7000; dir: alternate;"></a-entity>
+            </a-entity>
+
+            <!--crystal-top-->
+            <a-entity id="crystal" position="8 28 -18" animation="property: position; to: 8 27.5 -18; loop: true; dur: 500; dir: alternate;">
+                <a-entity template="src: assets/triger-play.html;" position="0 0 0" rotation="0 0 0"
+                animation="property: rotation; to: 0 360 0; duration: 2000; easing: linear; loop: true" static-body></a-entity>
+            </a-entity>
+
+            <!--building-->
+            <a-entity template="src: assets/mars-building.html;" position="8 27 2" rotation="0 0 0"></a-entity>
+            
+            <a-sky color="#D3D3D3"></a-sky>
+        </a-scene>
+
+        <!--script: this script is for the world gravity, the concept is actually using axis y to mimic the gravity.-->
+        <script>
+            const scene = AFRAME.scenes[0] // or use document.querySelector('a-scene')
+            scene.systems.physics.driver.world.gravity.y = -10; // set vertical gravity
+            console.log(scene.systems.physics.driver.world.gravity)
+        </script>
+
+        <!--this script is simply to set the function of a specific button to do something in the game (except WASD)-->
+        <script>
+        window.addEventListener('keydown', function (e) {
+            if (e.key == 'e') {
+                document.getElementById('off').style.display = 'block';
+            }
+            if (e.key == 'r') {
+                document.getElementById('off').style.display = 'none';
+            }
+            if (e.key == 't') {
+                location.replace('mars-m3-lobby.php?page=win');
+            }
+        // document.querySelector('p').innerHTML = `You pressed ${e.key}`;
+        }, false);
+
+        </script>
+    </body>
+</html>
