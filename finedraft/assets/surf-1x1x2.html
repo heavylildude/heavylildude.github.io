@@ -1,0 +1,32 @@
+<a-entity id="target" position="0 0 0">
+    <a-entity left geometry="primitive: plane; width: 2; height: 1;"
+              position="-0.5 0 0"
+              rotation="0 -90 0"
+              material="src: assets/texture/mars-txtr-surf.svg; repeat: 2 1;"
+              static-body></a-entity>
+    <a-entity right geometry="primitive: plane; width: 2; height: 1;"
+              position="0.5 0 0"
+              rotation="0 90 0"
+              material="src: assets/texture/mars-txtr-surf.svg; repeat: 2 1;"
+              static-body></a-entity>
+    <a-entity top geometry="primitive: plane; width: 1; height: 2;"
+              position="0 0.5 0"
+              rotation="-90 0 0"
+              material="src: assets/texture/mars-txtr.svg; repeat: 1 2;"
+              static-body></a-entity>
+    <a-entity bottom geometry="primitive: plane; width: 1; height: 2;"
+              position="0 -0.5 0"
+              rotation="90 0 0"
+              material="src: assets/texture/mars-txtr-1layer.svg; repeat: 1 2;"
+              static-body></a-entity>
+    <a-entity front geometry="primitive: plane; width: 1; height: 1;"
+              position="0 0 1"
+              rotation="0 0 0"
+              material="src: assets/texture/mars-txtr-surf.svg; repeat: 1 1;"
+              static-body></a-entity>
+    <a-entity back geometry="primitive: plane; width: 1; height: 1;"
+              position="0 0 -1"
+              rotation="0 180 0"
+              material="src: assets/texture/mars-txtr-surf.svg; repeat: 1 1;"
+              static-body></a-entity>
+<a-entity>
