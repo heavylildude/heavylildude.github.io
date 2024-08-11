@@ -1,0 +1,351 @@
+<style>
+    html, body {
+        background-color: black
+    }
+
+    @keyframes blinky {
+        0% { background-color: magenta}
+        20% { background-color: cyan}
+        40% { background-color: rgb(60, 255, 0)}
+        60% { background-color: rgb(255, 242, 0)}
+        80% { background-color: cyan}
+        100% { background-color: magenta}
+    }
+
+    @keyframes bigflame {
+        0% { height: 0}
+        85% { height: 30px}
+        100% { height: 30px}
+    }
+
+    @keyframes smallflame {
+        0% { height: 0}
+        85% { height: 0px}
+        100% { height: 40px}
+    }
+
+    @keyframes stars {
+        0% { top: 50px }
+        100% { top: calc(100vh + 50px)}
+    }
+
+    @keyframes stars2 {
+       0% { top: 400px;}
+       100% { top: calc(100vh + 400px); }
+    }
+    @keyframes stars3 {
+        0% {top: 200px;}
+        100% {top: calc(100vh + 200px); }
+    }
+    @keyframes stars4 {
+       0% { top: 500px;}
+       100% { top: calc(100vh + 500px); }
+    }
+    @keyframes stars5 {
+        0% {top: 300px;}
+        100% {top: calc(100vh + 300px); }
+    }
+    @keyframes stars6 {
+       0% { top: 500px;opacity: 0;}
+       20% { opacity: 1;}
+       65% { opacity: 1;}
+        70% { opacity: 0;}
+        80% { opacity: 1;}
+       100% { top: calc(100vh + 500px); opacity: 0;}
+    }
+
+    /* BG2 */
+    @keyframes stars12 {
+        0% { top: calc(100vh + 50px); opacity: 0; }
+        20% { opacity: 1;}
+        40% { opacity: 0;}
+        80% { top: 50px; opacity: 1; }
+        100% { top: 50px }
+    }
+
+    @keyframes stars22 {
+       0% { top: calc(100vh + 400px);}
+       80% { top: 400px; }
+       100% { top: 400px; }
+    }
+    @keyframes stars32 {
+        0% {top: (100vhcalc + 200px);}
+        80% {top: 200px; }
+        100% {top: 200px; }
+    }
+    @keyframes stars42 {
+       0% { top: calc(100vh + 500px);}
+       80% { top: 500px; }
+       100% { top: 500px; }
+    }
+    @keyframes stars52 {
+        0% {top: (100vhcalc + 300px);}
+        80% {top: 300px; }
+        100% {top: 300px; }
+    }
+    @keyframes stars62 {
+       0% { top: calc(100vh + 500px); opacity: 0;}
+       20% { opacity: 1;}
+        40% { opacity: 0;}
+       80% { top: 500px; opacity: 1;}
+       100% { top: 500px; opacity: 0;}
+    }
+
+
+    #yo {
+        width: 100px;
+        height: 170px;
+        display: block;
+        background-color: transparent;
+        position: fixed;
+        transition: all 0.5s;
+    }
+
+    #beam {
+        width: 4px;
+        height: 2500px;
+        background-color: red;
+        position: absolute;
+        top: -2500px;
+        left: 48px;
+    }
+
+    #target {
+        width: 100px;
+        height: 100px;
+        display: block;
+        background-color:transparent;
+        position: fixed;
+        top: 80px;
+        opacity: 1;
+        transition: all 0.5s;
+    }
+
+     #targettwo {
+        width: 100px;
+        height: 100px;
+        display: block;
+        background-color: transparent;
+        position: fixed;
+        top: 40px;
+        opacity: 1;
+        transition: all 0.5s;
+    }
+
+    .leftantenna {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: 0;
+        left: 10px;
+        background-color: magenta;
+        display: block;
+        animation: blinky 1s infinite alternate;
+    }
+    .rightantenna {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: 0;
+        right: 10px;
+        background-color: magenta;
+        display: block;
+        animation: blinky 1s infinite alternate;
+    }
+    .face {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: 20px;
+        left: 30px;
+        display: block;
+        background-color: magenta;
+
+        animation: blinky 1s infinite alternate;
+    }
+    .lleg {
+        width: 20px;
+        height: 50px;
+        position: absolute;
+        top: 50px;
+        left: 0px;
+        display: block;
+        background-color: magenta;
+        animation: blinky 1s infinite alternate;
+    }
+
+    .rleg {
+        width: 20px;
+        height: 50px;
+        position: absolute;
+        top: 50px;
+        right: 0px;
+        display: block;
+        background-color: magenta;
+        animation: blinky 1s infinite alternate;
+    }
+
+    .lthruster, .rthruster {
+        width: 16px;
+        height: 30px;
+        position: absolute;
+        top: 105px;
+        left: 2px;
+        display: block;
+        background-color: orange;
+        animation: bigflame 0.4s infinite;
+    }
+    
+    .lthruster2, .rthruster2 {
+        width: 4px;
+        height: 40px;
+        position: absolute;
+        top: 135px;
+        left: 8px;
+        display: block;
+        background-color: yellow;
+        animation: smallflame 0.4s infinite;
+    }
+
+    .rthruster {
+        left: 82px;
+    }
+
+    .rthruster2 {
+        left: 88px;
+    }
+
+    /* STARS */
+
+    .star {
+        width: 3px;
+        height: 3px;
+        position: fixed;
+        top: 50px;
+        left: 100px;
+        background-color: white;
+        animation: stars 8s infinite;
+        opacity: 1;
+    }
+
+    .star:nth-child(2) { top: 400px; left: 300px; animation: stars2 4s infinite;}
+    .star:nth-child(3) { width: 5px; height: 5px; top: 200px; left: 600px; animation: stars3 8s infinite;}
+    .star:nth-child(4) { top: 500px; left: 200px; animation: stars4 3s infinite;}
+    .star:nth-child(5) { top: 300px; left: 900px; animation: stars5 2s infinite;}
+    .star:nth-child(6) { top: 500px; left: 700px; width: 7px; height: 7px;  animation: stars6 6s infinite;}
+
+    /* #bgbefore .star { top: calc(100vh - 50px); animation: stars12 4s infinite;}
+    #bgbefore .star:nth-child(2) { top: calc(100vh - 400px); animation: stars22 6s infinite;}
+    #bgbefore .star:nth-child(3) { top: calc(100vh - 200px); animation: stars32 5s infinite;}
+    #bgbefore .star:nth-child(4) { width: 5px; height: 5px; top: calc(100vh - 500px); animation: stars42 2s infinite;}
+    #bgbefore .star:nth-child(5) { top: calc(100vh - 300px); animation: stars52 5s infinite;}
+    #bgbefore .star:nth-child(6) { width: 7px; height: 7px; top: calc(100vh - 500px); animation: stars62 4s infinite;} */
+
+</style>
+<div id="bg"></div>
+<div id="bgbefore"></div>
+
+<div id="yo" style="top:550px;left: 500px;">
+    <div id="beam" style="display: none;"></div>
+    <div class="face" style="animation: none; background-color: white; height: 55px;"></div>
+    <div class="lleg" style="animation: none; background-color: white"></div>
+    <div class="rleg" style="animation: none; background-color: white"></div>
+    <div class="lthruster"></div>
+    <div class="lthruster2"></div>
+    <div class="rthruster"></div>
+    <div class="rthruster2"></div>
+</div>
+
+<div id="target" style="left: 700px">
+    <div class="leftantenna"></div>
+    <div class="rightantenna"></div>
+    <div class="face"></div>
+    <div class="lleg"></div>
+    <div class="rleg"></div>
+</div>
+<div id="targettwo" style="left: 400px">
+    <div class="leftantenna"></div>
+    <div class="rightantenna"></div>
+    <div class="face"></div>
+    <div class="lleg"></div>
+    <div class="rleg"></div>
+</div>
+<audio id="shoot" src="shoot.wav"></audio>
+<audio id="monster" src="fastinvader1.wav"></audio>
+<audio id="monsterdie" src="invaderkilled.wav"></audio>
+<script>
+    function starryeyesurprised() {
+        var bg = '';
+        for (var i=1; i<7; i++) {
+            bg = bg + '<div class="star"></div>';
+        }
+        document.querySelector('#bg').innerHTML = bg;
+        document.querySelector('#bgbefore').innerHTML = bg;
+    }
+
+    function enemymovement() {
+        var target = document.querySelector('#target').style.left;
+        var targettwo = document.querySelector('#targettwo').style.left;
+        var enemy = document.querySelector('#monster');
+        enemy.play();
+        //alert(e.keyCode);
+        if (parseFloat(target) < 900) {
+            var tb = parseFloat(target) + 100;
+            var tbt = parseFloat(targettwo) - 100;
+            document.querySelector('#target').style.left = tb + 'px'; 
+            document.querySelector('#targettwo').style.left = tbt + 'px'; 
+        } else {
+            var tb = parseFloat(target) - 100;
+            var tbt = parseFloat(targettwo) + 100;
+            document.querySelector('#target').style.left = tb + 'px'; 
+            document.querySelector('#targettwo').style.left = tbt + 'px'; 
+        }
+    }
+
+
+
+    function that(e) {
+
+      var x = document.querySelector('#yo').style.left;
+      var y = document.querySelector('#yo').style.top;
+      var target = document.querySelector('#target').style.left;
+      var targettwo = document.querySelector('#targettwo').style.left;
+      var shootsound = document.querySelector('#shoot');
+      var killed = document.querySelector('#monsterdie');
+
+      if (e.keyCode == 39) {
+          var become = parseFloat(x) + 100;
+          document.querySelector('#yo').style.left = become + 'px';
+      } else if (e.keyCode == 37) {
+          var become = parseFloat(x) - 100;
+          document.querySelector('#yo').style.left = become + 'px';
+      } else if (e.keyCode == 38) {
+          var become = parseFloat(y) - 100;
+          document.querySelector('#yo').style.top = become + 'px';
+      } else if (e.keyCode == 40) {
+          var become = parseFloat(y) + 100;
+          document.querySelector('#yo').style.top = become + 'px';
+      } else if (e.keyCode == 32) {
+          shootsound.play();
+          document.querySelector('#beam').style.display = 'block';
+          setTimeout(function(){ document.querySelector('#beam').style.display = 'none'; }, 50);
+          // if the beam hit something that something go kaboom
+
+          if (target == x) {
+              document.querySelector('#target').style.opacity = '0';
+              killed.play();
+          } else if (targettwo == x) {
+              document.querySelector('#targettwo').style.opacity = '0';
+              killed.play();
+          }
+      }
+    }
+
+    function dothisfirst() {
+        starryeyesurprised();
+        setInterval(enemymovement, 1000);
+    }
+
+    window.addEventListener('keydown', that);
+    window.addEventListener('load', dothisfirst);
+</script>
