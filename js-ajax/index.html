@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Learn Ajax Js</title>
+    <style>
+      h1 {
+        color: blue;
+      }
+
+      .card {
+        width: 200px;
+        height: 350px;
+        margin: 10px;
+        padding: 10px;
+        background-color: white;
+        border: 1px solid black;
+        float: left;
+      }
+
+      .card .itemimage {
+        background-size: contain;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 200px;
+      }
+
+      th { 
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <button type="button" onclick="loadMe('about')">About</button>
+    <button type="button" onclick="loadMe('another')">Another</button>
+    <div id="main">
+      <h3>Welcome Please Select a Menu</h3>
+    </div>
+    <hr>
+    <button type="button" onclick="loadTable()">Load Table</button>
+    <button type="button" onclick="loadCard()">Load Card</button>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody id="tableContainer">
+        <tr>
+          <th>...</th>
+          <th>...</th>
+          <th>...</th>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="cardContainer"></div>
+  </body>
+</html>
+<script>
+  function loadMe(x) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+      document.getElementById('main').innerHTML = this.responseText;
+    }
+    xhttp.open('GET', x + '.txt', true);
+    xhttp.send();
+  }
+
+  function loadTable() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        makeAsTable(this);
+      }
+    };
+    xhttp.open('GET', 'data.xml', true);
+    xhttp.send();
+  }
+
+  function makeAsTable(xml) {
+    var i;
+    var xmlDoc = xml.responseXML;
+    var totalRow = '';
+    var row = '';
+    var x = xmlDoc.getElementsByTagName('ITEM');
+    for (i = 0; i <x.length; i++) { 
+      row = '<tr><td>' + x[i].getElementsByTagName('NO')[0].childNodes[0].nodeValue + '</td><td>' + x[i].getElementsByTagName('ITEMNAME')[0].childNodes[0].nodeValue + '</td><td>' + x[i].getElementsByTagName('DESC')[0].childNodes[0].nodeValue + '</td></tr>';
+      totalRow = totalRow + row;
+    }
+    document.getElementById('tableContainer').innerHTML = totalRow;
+  }
+
+  function loadCard() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        makeAsCard(this);
+      }
+    };
+    xhttp.open('GET', 'data.xml', true);
+    xhttp.send();
+  }
+
+  function makeAsCard(xml) {
+    var i;
+    var xmlDoc = xml.responseXML;
+    var totalCard = '';
+    var card = '';
+    var x = xmlDoc.getElementsByTagName('ITEM');
+    for (i = 0; i <x.length; i++) { 
+      card = '<div class="card"><div class="itemimage" style="background-image: url(\'' + x[i].getElementsByTagName('IMAGE')[0].childNodes[0].nodeValue + '\')"></div><h3>' + x[i].getElementsByTagName('ITEMNAME')[0].childNodes[0].nodeValue + '</h3><p>' + x[i].getElementsByTagName('DESC')[0].childNodes[0].nodeValue + '</p><a target="_blank" href="' + x[i].getElementsByTagName('LINK')[0].childNodes[0].nodeValue + '">LINK</a></div>';
+      totalCard = totalCard + card;
+    }
+    document.getElementById('cardContainer').innerHTML = totalCard;
+  }
+</script>

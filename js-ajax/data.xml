@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OFFICE>
+  <ITEM>
+    <NO>1</NO>
+    <ITEMNAME>Monitor</ITEMNAME>
+    <DESC>A device to see the visual</DESC>
+    <LINK>https://www.tokopedia.com/mycomshop/dell-alienware-monitor-gaming-34-aw3423dw-curved-qd-oled</LINK>
+    <IMAGE>monitor.jpg</IMAGE>
+  </ITEM>
+  <ITEM>
+    <NO>2</NO>
+    <ITEMNAME>Mouse</ITEMNAME>
+    <DESC>A device to move the cursor</DESC>
+    <LINK>https://www.tokopedia.com/razer/razer-viper-v3-pro-black-ultra-lightweight-symmetrical-esports-gaming-mouse</LINK>
+    <IMAGE>mouse.jpg</IMAGE>
+  </ITEM>
+  <ITEM>
+    <NO>3</NO>
+    <ITEMNAME>Keyboard</ITEMNAME>
+    <DESC>A device to type</DESC>
+    <LINK>https://www.tokopedia.com/mycomshop/dell-alienware-tri-mode-wireless-gaming-keyboard-aw920k-alienfx-rgb-white-lunar</LINK>
+    <IMAGE>keyboard.jpg</IMAGE>
+  </ITEM>
+</OFFICE>
+
