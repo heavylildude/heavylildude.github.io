@@ -1,0 +1,17 @@
+{
+  "short_name": "Hello",
+  "name": "Lorem Ipsum",
+  "display": "standalone",
+  "id": "/",
+  "start_url": "/",
+  "icons": [
+      {
+          "src": "apple-touch-icon.png",
+          "sizes": "any",
+          "type": "image/png",
+          "purpose": "any"
+      }
+  ]
+}
+
+  
