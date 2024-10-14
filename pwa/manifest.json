@@ -2,8 +2,8 @@
   "short_name": "Hello",
   "name": "Lorem Ipsum",
   "display": "standalone",
-  "id": "/",
-  "start_url": "/",
+  "id": "/pwa",
+  "start_url": "/pwa",
   "icons": [
       {
           "src": "apple-touch-icon.png",
