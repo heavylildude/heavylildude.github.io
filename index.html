@@ -99,7 +99,7 @@ Type 'help' to get started.</div>
                 const lowerCmd = command.toLowerCase();
 
                 // Natural Conversations
-                if (["hi", "hello", "hey", "yo", "sup"].includes(lowerCmd)) {
+                if ([lowerCmd === "hi" || lowerCmd === "hello" || lowerCmd === "hey" || lowerCmd === "yo" || lowerCmd === "sup"].includes(lowerCmd)) {
                     return ["Yo! Welcome to the terminal.", "Hey there, traveler.", "Hello, fellow human.", "Greetings, hacker."](Math.floor(Math.random() * 4));
                 }
                 if (lowerCmd === "how are you" || lowerCmd === "how's it going") {
@@ -128,7 +128,8 @@ Type 'help' to get started.</div>
                 
                 // Case Studies & Portfolio
                 if (lowerCmd === "case studies") {
-                    return "Here are some of Chris' projects:\n1. Project Alpha - AI-powered chatbot\n2. Project Beta - A custom CMS\n3. Project Gamma - Web3 marketplace\n(Type 'project 1' for details)";
+                    //return "Here are some of Chris' projects:\n1. Project Alpha - AI-powered chatbot\n2. Project Beta - A custom CMS\n3. Project Gamma - Web3 marketplace\n(Type 'project 1' for details)";
+                    return "Ah shoot, seems like he's yet update me on this.. Norries! I'll remind him later.."
                 }
                 if (lowerCmd.match(/project\s\d+/)) {
                     const num = lowerCmd.split(" ")[1];
@@ -154,13 +155,13 @@ Type 'help' to get started.</div>
                     return ""; // Clearing handled separately
                 }
                 if (lowerCmd === "help") {
-                    return "Available commands: help, about, case studies, joke, secret, contact, clear, roll a dice, flip a coin, who are you, tell me something cool, learn coding.";
+                    return "Available commands: help, about, case studies, contact, clear, roll a dice, flip a coin, who are you, tell me something cool, aah heck just say anything you want...";
                 }
                 if (lowerCmd === "contact") {
-                    return "You can reach Chris via [insert link or email here].";
+                    return "You can reach Chris via heavylildude@gmail.com.";
                 }
 
-                return `Command not found: ${command}. Type 'help' for a list of commands.`;
+                return `Sorry I don't understand ${command}. Type 'help' for a list of commands.`;
             }
 
 
