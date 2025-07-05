@@ -1,0 +1,32 @@
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = 400;
+canvas.height = 200;
+document.body.appendChild(canvas);
+
+let hue = 0;
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '48px Comic Sans MS';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Doodle effect with colorful outline
+    for (let i = 0; i < 10; i++) {
+        ctx.beginPath();
+        ctx.strokeStyle = `hsl(${hue + i * 20}, 70%, 60%)`;
+        ctx.lineWidth = 2;
+        ctx.strokeText('happy weekend Bernice', canvas.width / 2, canvas.height / 2);
+    }
+
+    // Fill with a bright color
+    ctx.fillStyle = 'hsl(200, 70%, 70%)';
+    ctx.fillText('happy weekend Bernice', canvas.width / 2, canvas.height / 2);
+
+    // Animate hue for color change
+    hue = (hue + 1) % 360;
+    requestAnimationFrame(draw);
+}
+
+draw();
