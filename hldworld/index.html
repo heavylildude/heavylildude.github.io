@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-Bit Metaverse PoC - Multiplayer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden; /* Hide scrollbars */
+        }
+        canvas {
+            background-color: #2a3d45; /* A nice dark sky blue */
+            display: block;
+            /* This is the magic for that crisp 8-bit look when scaling */
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        #chat-input {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+        }
+        #chat-input:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        .user-id-display {
+            background-color: rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen m-0 p-4">
+    <div id="canvas-container" class="w-full aspect-video max-w-6xl shadow-2xl rounded-lg overflow-hidden relative">
+        <canvas id="gameCanvas"></canvas>
+        <div id="user-id-display" class="user-id-display absolute top-2 left-2 p-2 rounded-md text-xs">
+            Connecting...
+        </div>
+    </div>
+    <div class="w-full max-w-6xl mt-4">
+        <form id="chat-form" class="flex">
+            <input type="text" id="chat-input" placeholder="Say something... (max 50 chars)" maxlength="50" autocomplete="off" class="w-full p-2 rounded-l-md focus:ring-0">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-md">Send</button>
+        </form>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // --- Firebase Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc, addDoc, serverTimestamp, query, where, orderBy 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Standard Game Code ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('canvas-container');
+        const userIdDisplay = document.getElementById('user-id-display');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        
+        // --- Game World Configuration ---
+        const WORLD_WIDTH = 5120;
+        const WORLD_HEIGHT = 2880;
+        const LAND_GRAVITY = 1.2;
+        const WATER_LEVEL = WORLD_HEIGHT - 350;
+        const LAND_MASS_WIDTH = 1280;
+
+        // --- Player Configuration ---
+        const player = {
+            width: 40,
+            height: 60,
+            x: 200,
+            y: WATER_LEVEL - 150 - 60,
+            velocityX: 0,
+            velocityY: 0,
+            speed: 6,
+            jumpForce: 22,
+            gravity: LAND_GRAVITY,
+            maxFallSpeed: 20,
+            onGround: false,
+            inWater: false,
+            jumps: 1,
+            maxJumps: 1,
+            chatMessage: null // { text: "Hi!", ttl: 180 }
+        };
+        
+        const camera = { x: 0, y: 0, verticalOffset: 0.7 };
+        const keys = { a: { pressed: false }, d: { pressed: false } };
+        
+        const platforms = [
+            { x: 0, y: WATER_LEVEL, width: WORLD_WIDTH, height: WORLD_HEIGHT - WATER_LEVEL, type: 'water', color: 'rgba(52, 152, 219, 0.6)' },
+            { x: 0, y: WORLD_HEIGHT - 50, width: WORLD_WIDTH, height: 50, type: 'solid', color: '#5e4843' },
+            { x: 0, y: WATER_LEVEL - 150, width: LAND_MASS_WIDTH, height: WORLD_HEIGHT - (WATER_LEVEL - 150), type: 'solid', color: '#6a4f4b' },
+            { x: WORLD_WIDTH - LAND_MASS_WIDTH, y: WATER_LEVEL - 150, width: LAND_MASS_WIDTH, height: WORLD_HEIGHT - (WATER_LEVEL - 150), type: 'solid', color: '#6a4f4b' },
+            { x: 200, y: WATER_LEVEL - 350, width: 200, height: 30, type: 'solid', color: '#8a8a8a' },
+            { x: 500, y: WATER_LEVEL - 550, width: 150, height: 30, type: 'solid', color: '#8a8a8a' },
+            { x: LAND_MASS_WIDTH + 300, y: WATER_LEVEL - 100, width: 250, height: 30, type: 'solid', color: '#8a8a8a' },
+            { x: WORLD_WIDTH / 2 - 125, y: WATER_LEVEL - 450, width: 250, height: 30, type: 'solid', color: '#8a8a8a' },
+            { x: WORLD_WIDTH / 2 - 400, y: WORLD_HEIGHT - 150, width: 150, height: 30, type: 'solid', color: '#5e4843' },
+            { x: WORLD_WIDTH / 2 + 250, y: WORLD_HEIGHT - 250, width: 150, height: 30, type: 'solid', color: '#5e4843' },
+        ];
+
+        // --- Multiplayer Variables ---
+        let db, auth, userId, playerRef, chatRef;
+        const remotePlayers = {};
+        const CHAT_TTL = 300; // 5 seconds at 60fps
+
+        // Function to generate a color from a string (so players are consistent)
+        const colorFromString = (str) => {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            let color = '#';
+            for (let i = 0; i < 3; i++) {
+                const value = (hash >> (i * 8)) & 0xFF;
+                color += ('00' + value.toString(16)).substr(-2);
+            }
+            return color;
+        };
+
+        // --- Firebase Initialization ---
+        async function initFirebase() {
+            //const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-metaverse';
+          //  const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            const appId = 'hldlab';
+const firebaseConfig = {
+  apiKey: "AIzaSyCumJOEhbdYaoPLcdI9kYBxnW6EQ1moYk0",
+  authDomain: "hldlab.firebaseapp.com",
+  projectId: "hldlab",
+  storageBucket: "hldlab.firebasestorage.app",
+  messagingSenderId: "922030804373",
+  appId: "1:922030804373:web:01bf244ed85d0ee9257a9c",
+  measurementId: "G-7TEY39L3X3"
+};
+            
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            try {
+                // if (typeof __initial_auth_token !== 'undefined') {
+                //     await signInWithCustomToken(auth, __initial_auth_token);
+                // } else {
+                    await signInAnonymously(auth);
+                // }
+                
+                userId = auth.currentUser.uid;
+                player.color = colorFromString(userId);
+                userIdDisplay.textContent = `Your ID: ${userId}`;
+
+                // Firestore refs
+                const publicDataPath = `/artifacts/${appId}/public/data`;
+                playerRef = collection(db, `${publicDataPath}/players`);
+                chatRef = collection(db, `${publicDataPath}/chatMessages`);
+                
+                initMultiplayer();
+                gameLoop(); // Start the game only after auth is successful
+
+            } catch (error) {
+                console.error("Authentication failed, brah:", error);
+                userIdDisplay.textContent = "Error connecting!";
+            }
+        }
+
+        function initMultiplayer() {
+            // Listen for other players' movements
+            onSnapshot(playerRef, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    const docId = change.doc.id;
+                    const data = change.doc.data();
+
+                    if (docId === userId) return; // Don't listen to our own echo
+
+                    if (change.type === "added" || change.type === "modified") {
+                        if (!remotePlayers[docId]) {
+                             remotePlayers[docId] = { ...data, chatMessage: null };
+                        } else {
+                            Object.assign(remotePlayers[docId], data);
+                        }
+                    } else if (change.type === "removed") {
+                        delete remotePlayers[docId];
+                    }
+                });
+            });
+
+            // Listen for new chat messages
+            // Only listen for messages created in the last minute to save reads
+            const recentTimestamp = new Date(Date.now() - 60000);
+            const chatQuery = query(chatRef, where("createdAt", ">", recentTimestamp), orderBy("createdAt", "desc"));
+
+            onSnapshot(chatQuery, (snapshot) => {
+                 snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const msg = change.doc.data();
+                        
+                        // --- Proximity Check ---
+                        const isVisible = msg.x >= camera.x && msg.x <= camera.x + canvas.width;
+                        if(!isVisible) return; // If sender is off-screen, we don't care
+
+                        const messageData = { text: msg.text, ttl: CHAT_TTL };
+                        
+                        if (msg.senderId === userId) {
+                            player.chatMessage = messageData;
+                        } else if (remotePlayers[msg.senderId]) {
+                            remotePlayers[msg.senderId].chatMessage = messageData;
+                        }
+                    }
+                });
+            });
+
+            // Clean up our player doc when leaving
+            window.addEventListener('beforeunload', () => {
+                deleteDoc(doc(playerRef, userId));
+            });
+        }
+        
+        async function broadcastPlayerState() {
+            if (!userId) return;
+            try {
+                await setDoc(doc(playerRef, userId), {
+                    x: player.x,
+                    y: player.y,
+                    color: player.color
+                });
+            } catch (error) {
+                console.error("Failed to broadcast state:", error);
+            }
+        }
+
+        async function sendChatMessage(text) {
+             if (!userId || !text.trim()) return;
+             try {
+                await addDoc(chatRef, {
+                    text: text.trim(),
+                    senderId: userId,
+                    x: player.x, // For the proximity check
+                    createdAt: serverTimestamp()
+                });
+             } catch(error) {
+                console.error("Couldn't send message:", error)
+             }
+        }
+
+        // --- Game Logic ---
+        function resizeCanvas() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+
+        function handleInput() {
+            player.velocityX = 0;
+            if (keys.a.pressed) player.velocityX = -player.speed;
+            if (keys.d.pressed) player.velocityX = player.speed;
+        }
+
+        function update() {
+            handleInput();
+            player.x += player.velocityX;
+            if (player.x + player.width < 0) player.x = WORLD_WIDTH;
+            else if (player.x > WORLD_WIDTH) player.x = -player.width;
+
+            player.y += player.velocityY;
+            
+            player.onGround = false;
+            let wasInWater = false;
+
+            platforms.forEach(originalPlatform => {
+                const instances = [
+                    originalPlatform,
+                    { ...originalPlatform, x: originalPlatform.x - WORLD_WIDTH },
+                    { ...originalPlatform, x: originalPlatform.x + WORLD_WIDTH }
+                ];
+                instances.forEach(platform => {
+                    if (player.x + player.width > platform.x && player.x < platform.x + platform.width && player.y + player.height > platform.y && player.y < platform.y + platform.height) {
+                        if (platform.type === 'solid') {
+                            const overlapX = (player.x + player.width / 2) - (platform.x + platform.width / 2);
+                            const overlapY = (player.y + player.height / 2) - (platform.y + platform.height / 2);
+                            const combinedHalfWidths = (player.width + platform.width) / 2;
+                            const combinedHalfHeights = (player.height + platform.height) / 2;
+
+                            if (Math.abs(overlapX) / combinedHalfWidths < Math.abs(overlapY) / combinedHalfHeights) {
+                                if (overlapY > 0) {
+                                    player.y = platform.y + platform.height;
+                                    player.velocityY = 0;
+                                } else {
+                                    player.onGround = true;
+                                    player.y = platform.y - player.height;
+                                    player.velocityY = 0;
+                                    player.jumps = player.maxJumps;
+                                }
+                            } else {
+                                if (overlapX > 0) player.x = platform.x + platform.width;
+                                else player.x = platform.x - player.width;
+                                player.velocityX = 0;
+                            }
+                        } else if (platform.type === 'water') {
+                            wasInWater = true;
+                        }
+                    }
+                });
+            });
+
+            player.inWater = wasInWater;
+            if (player.inWater) {
+                player.gravity = LAND_GRAVITY * 0.1;
+                player.maxJumps = 2;
+                if (player.velocityY > player.maxFallSpeed * 0.3) player.velocityY = player.maxFallSpeed * 0.3;
+            } else {
+                player.gravity = LAND_GRAVITY;
+                player.maxJumps = 1;
+            }
+            player.velocityY += player.gravity;
+            if (player.velocityY > player.maxFallSpeed) player.velocityY = player.maxFallSpeed;
+
+            camera.x = player.x + player.width / 2 - canvas.width / 2;
+            camera.y = player.y + player.height / 2 - canvas.height * camera.verticalOffset;
+        }
+
+        function drawObject(obj) {
+             ctx.fillStyle = obj.color || 'grey';
+             ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+        }
+
+        function drawPlayer(p, id) {
+             // Player body
+            ctx.fillStyle = p.color || '#f0f0f0';
+            ctx.fillRect(p.x, p.y, p.width, p.height);
+
+            // Player ID
+            ctx.font = '12px Courier New';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText(id, p.x + p.width / 2, p.y - 10);
+
+             // Player Chat Message
+            if (p.chatMessage && p.chatMessage.ttl > 0) {
+                const { text, ttl } = p.chatMessage;
+                const alpha = Math.min(1, ttl / (CHAT_TTL * 0.5)); // Fade out effect
+                ctx.font = '14px Courier New';
+                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                ctx.fillText(text, p.x + p.width / 2, p.y - 30);
+                p.chatMessage.ttl--;
+            }
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(-camera.x, -camera.y);
+
+            // Draw world
+            platforms.forEach(p => {
+                drawObject(p);
+                drawObject({...p, x: p.x - WORLD_WIDTH});
+                drawObject({...p, x: p.x + WORLD_WIDTH});
+            });
+
+            // Draw local player and looped copies
+            drawPlayer(player, userId);
+            drawPlayer({...player, x: player.x - WORLD_WIDTH }, userId);
+            drawPlayer({...player, x: player.x + WORLD_WIDTH }, userId);
+            
+            // Draw remote players
+            for (const id in remotePlayers) {
+                const p = remotePlayers[id];
+                drawPlayer(p, id);
+                drawPlayer({...p, x: p.x - WORLD_WIDTH }, id);
+                drawPlayer({...p, x: p.x + WORLD_WIDTH }, id);
+            }
+
+            ctx.restore();
+        }
+        
+        let frameCount = 0;
+        function gameLoop() {
+            update();
+            draw();
+            
+            // Throttle Firestore writes to ~15fps to avoid spamming
+            if (frameCount % 4 === 0) { 
+                broadcastPlayerState();
+            }
+            frameCount++;
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- Event Listeners ---
+        window.addEventListener('keydown', (e) => {
+            if (document.activeElement === chatInput) return; // Don't move while typing
+            switch (e.key) {
+                case 'a': case 'A': case 'ArrowLeft': keys.a.pressed = true; break;
+                case 'd': case 'D': case 'ArrowRight': keys.d.pressed = true; break;
+                case ' ':
+                    if (player.jumps > 0) {
+                        player.velocityY = -player.jumpForce * (player.inWater ? 0.6 : 1);
+                        player.jumps--;
+                    }
+                    break;
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            switch (e.key) {
+                case 'a': case 'A': case 'ArrowLeft': keys.a.pressed = false; break;
+                case 'd': case 'D': case 'ArrowRight': keys.d.pressed = false; break;
+            }
+        });
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendChatMessage(chatInput.value);
+            chatInput.value = '';
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // --- Initialisation ---
+        resizeCanvas();
+        initFirebase();
+    </script>
+</body>
+</html>
+
