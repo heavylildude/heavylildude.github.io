@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8-Bit Metaverse PoC - Multiplayer</title>
+    <title>HLD 8-Bit Metaverse</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -55,7 +55,7 @@
     <script type="module">
         // --- Firebase Imports ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { 
             getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc, addDoc, serverTimestamp, query, where, orderBy 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -131,46 +131,39 @@
 
         // --- Firebase Initialization ---
         async function initFirebase() {
-            //const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-metaverse';
-          //  const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
             // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-            const appId = 'hldlab';
-const firebaseConfig = {
-  apiKey: "AIzaSyCumJOEhbdYaoPLcdI9kYBxnW6EQ1moYk0",
-  authDomain: "hldlab.firebaseapp.com",
-  projectId: "hldlab",
-  storageBucket: "hldlab.firebasestorage.app",
-  messagingSenderId: "922030804373",
-  appId: "1:922030804373:web:01bf244ed85d0ee9257a9c",
-  measurementId: "G-7TEY39L3X3"
-};
+            const firebaseConfig = {
+              apiKey: "AIzaSyCumJOEhbdYaoPLcdI9kYBxnW6EQ1moYk0",
+              authDomain: "hldlab.firebaseapp.com",
+              projectId: "hldlab",
+              storageBucket: "hldlab.appspot.com", // Corrected storage bucket domain
+              messagingSenderId: "922030804373",
+              appId: "1:922030804373:web:01bf244ed85d0ee9257a9c",
+              measurementId: "G-7TEY39L3X3"
+            };
             
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
             auth = getAuth(app);
             
             try {
-                // if (typeof __initial_auth_token !== 'undefined') {
-                //     await signInWithCustomToken(auth, __initial_auth_token);
-                // } else {
-                    await signInAnonymously(auth);
-                // }
+                await signInAnonymously(auth);
                 
                 userId = auth.currentUser.uid;
                 player.color = colorFromString(userId);
                 userIdDisplay.textContent = `Your ID: ${userId}`;
 
-                // Firestore refs
-                const publicDataPath = `/artifacts/${appId}/public/data`;
-                playerRef = collection(db, `${publicDataPath}/players`);
-                chatRef = collection(db, `${publicDataPath}/chatMessages`);
+                // Firestore refs for your own Firebase project
+                // We'll use simple top-level collections now, brah
+                playerRef = collection(db, 'players');
+                chatRef = collection(db, 'chatMessages');
                 
                 initMultiplayer();
                 gameLoop(); // Start the game only after auth is successful
 
             } catch (error) {
                 console.error("Authentication failed, brah:", error);
-                userIdDisplay.textContent = "Error connecting!";
+                userIdDisplay.textContent = "Error connecting! Make sure your domain is authorized in Firebase.";
             }
         }
 
