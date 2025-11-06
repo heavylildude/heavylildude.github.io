@@ -3,31 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sheet as DB (The Gnarly Way)</title>
+    <title></title>
     <style>
-        body { 
-            background: #222; 
-            color: #0f0; 
-            font-family: 'Courier New', Courier, monospace; 
-            padding: 1em;
-        }
-        pre { 
-            background: #333; 
-            padding: 1em; 
-            border-radius: 5px; 
-            white-space: pre-wrap; 
-            word-break: break-all;
-        }
+       
     </style>
 </head>
 <body>
 
-    <h1>Check the Console, Brah! (And here, I guess...)</h1>
-    <pre id="output">Loading data from the matrix...</pre>
-
+    <h1 id="output"></h1>
     <script>
         // --- CONFIG ---
-        // Your specific sheet info, locked and loaded
         const SHEET_ID = '1_Eb5Vu48WsYYB9KxhhRM7BGf_d2blgmBDDM6TNby-RA';
         const TAB_ID = '0';
         // --- END CONFIG ---
@@ -36,8 +21,6 @@
 
         /**
          * Cleans the bogus JSONP wrapper from Google's response.
-         * @param {string} text - The raw text response from the fetch.
-         * @returns {object} - The parsed JSON object.
          */
         function cleanGoogleJsonResponse(text) {
             const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\((.*)\)/s);
@@ -48,23 +31,27 @@
         }
 
         /**
-         * Formats the cooked Google Viz data into a nice, clean array of objects.
+         * Formats the cooked Google Viz data into a nice, clean array of STRINGS.
+         * This version is hard-coded to only grab data from the first column (Column A).
          * @param {object} gvizData - The parsed JSON data from cleanGoogleJsonResponse.
-         * @returns {Array<object>} - A clean array, like [ { id: 1, name: 'Brah' }, ... ]
+         * @returns {Array<string>} - A clean array, like [ "Gift one", "Gift two" ]
          */
         function formatGvizData(gvizData) {
             const dataTable = gvizData.table;
-            const headers = dataTable.cols.map(col => col.label);
-            const rows = dataTable.rows.map(row => {
-                const rowData = {};
-                row.c.forEach((cell, index) => {
-                    const header = headers[index];
-                    const value = cell ? cell.v : null; 
-                    rowData[header] = value;
-                });
-                return rowData;
+            
+            // We don't need no stinkin' headers!
+            
+            const values = dataTable.rows.map(row => {
+                // 'c' is the array of cells. We just want the first one (index 0).
+                const firstCell = row.c[0]; 
+                
+                // 'v' is the value. Just return that, mate.
+                // We'll check if the cell exists, just in case of empty rows.
+                return firstCell ? firstCell.v : null;
             });
-            return rows;
+
+            // Let's filter out any 'null' values from empty rows, 'cause that's lame.
+            return values.filter(v => v !== null);
         }
 
         /**
@@ -82,13 +69,16 @@
                 
                 const text = await response.text();
                 const jsonData = cleanGoogleJsonResponse(text);
-                const formattedData = formatGvizData(jsonData);
+                
+                // This is our new, simple array
+                const availablegift = formatGvizData(jsonData); 
                 
                 // Hell yeah, success!
-                console.log('--- Bitchin\' Formatted Data ---');
-                console.log(formattedData);
+                console.log('--- Bitchin\' Formatted Array ---');
+                console.log(availablegift);
 
-                outputEl.textContent = JSON.stringify(formattedData, null, 2);
+                // Chuck it on the page
+                outputEl.textContent = JSON.stringify(availablegift, null, 2);
 
             } catch (error) {
                 console.error('Totally cooked it, brah:', error);
