@@ -706,7 +706,7 @@ if (/\b(cool|nice|awesome|great|amazing|smart|clever)\b/i.test(lwcmd)) {
     const compResponses = [ "Aww cheers mate, I try 💅", "Stop it, you’ll make me blush (if I had cheeks).", "Flattery detected ✅", "Haha thanks, you’re not too bad yourself.", "Legend behavior right there 👌", "I’ll take that compliment and frame it, thanks.", "Mood just leveled up with that comment.", "Omg stop, I’m gonna cry in binary.", "Appreciate it big time 🙏", "Compliments fuel me more than RAM." ];
     return createChatResponse(compResponses[Math.floor(Math.random() * compResponses.length)]);
 }
-if (/\b(advice|tips|help|life|struggle|stressed|bored)\b/i.test(lwcmd) && !/\b(commands|options)\b/i.test(lwcmd)) {
+if (/\b(advice|tips|life|struggle|stressed|bored)\b/i.test(lwcmd) && !/\b(commands|options)\b/i.test(lwcmd)) {
     const adviceResponses = [ "Take it slow, mate. Small steps still count.", "Drink some water first, always works.", "You’re doing better than you think, promise.", "Best advice: don’t code tired. Learned that the hard way.", "Stress? Move, stretch, breathe. Helps every time.", "Life hack: naps are underrated.", "Sometimes you just need snacks and a playlist.", "Write it down, clear your head.", "Progress > perfection, always.", "You got this, no cap." ];
     return createChatResponse(adviceResponses[Math.floor(Math.random() * adviceResponses.length)]);
 }
