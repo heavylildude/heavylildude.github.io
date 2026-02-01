@@ -142,7 +142,7 @@
   <main  id="cmdcont">
     <section id="terminal">
       <div class="command"><span class="ln" style="font-weight: normal; color: white">******</span> <span class="error" id="date"></span></div>
-      <div class="title"><span class="ln" style="font-weight: normal; color: white">******</span> 3051GW.(CWR022) - 82.09 Cols<br><span class="ln" style="font-weight: normal; color: white">******</span> <span class="string">00001 00404 Scroll ==> CSR</span></div><br>
+      <div class="title"><span class="ln" style="font-weight: normal; color: white">******</span> 3051GW.(CWR022) - 892 rws<br><span class="ln" style="font-weight: normal; color: white">******</span> <span class="string">00001 00404 Scroll ==> CSR</span></div><br>
       <pre>██╗  ██╗██╗     ██████╗ 
 ██║  ██║██║     ██╔══██╗
 ███████║██║     ██║  ██║
@@ -771,7 +771,7 @@ if (/\b(social media|follow|discord|twitter|ig|instagram)\b/i.test(lwcmd)) {
 }
 
 // SYSTEM & MAGNUS
-if (/\b(what else|anything else|what can you do|capabilities|help|commands|options)\b/i.test(lwcmd)) {
+if (/\b(what else|anything else|what can you do|capabilities|help|commands|options|menu)\b/i.test(lwcmd)) {
     if (lwcmd.includes("else")) {
         return createChatResponse("Beyond these commands, I can chat a bit and try to figure out what you mean. My main gig is to guide you through Chris's profile. You can try asking about his 'skills', 'projects', or 'experience'. Here's the full command list again for a refresh:", 'help');
     }
