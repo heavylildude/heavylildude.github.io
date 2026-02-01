@@ -6,7 +6,7 @@ With a problem-solving approach, he delivers scalable, secure, and user-friendly
 
 In consulting, he emphasizes collaboration, transparency, and agile practices, transforming client visions into impactful digital outcomes. By aligning technical strategies with business objectives, he supports startups and established enterprises alike. Hands-on from concept to execution, he embeds quality and innovation into every phase, building trusted partnerships rooted in reliability and shared success.
 
-### Adjunct Professor
+### Adjunct Lecturer
 
 **Raffles Institute of Higher Education**  [Link](https://raffles-iao.com/our_campus/raffles_institute_of_higher_education_jakarta/) 
 · Indonesia · 2018-Present  
