@@ -488,11 +488,11 @@ const bootSequence = () => {
             }
             
             initTerminal();
-          }, 500);
-        }, 300);
+          }, 300);
+        }, 200);
       }
-    }, 200);
-  }, 500);
+    }, 100);
+  }, 300);
 };
 
 const animateResponse = (element, container) => {
@@ -502,11 +502,11 @@ const animateResponse = (element, container) => {
   container.appendChild(element);
 
   let cumulativeDelay = 0;
-  const maxTotalDelay = 1000;
+  const maxTotalDelay = 800;
   const delayPerLine = maxTotalDelay / (lines.length || 1);
 
   lines.forEach(line => {
-    const currentDelay = Math.min(delayPerLine, 150);
+    const currentDelay = Math.min(delayPerLine, 100);
     cumulativeDelay += currentDelay;
 
     setTimeout(() => {
