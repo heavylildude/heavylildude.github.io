@@ -470,7 +470,7 @@ const bootSequence = () => {
     const dotInterval = setInterval(() => {
       dotsSpan.innerText += '.';
       dotCount++;
-      if (dotCount >= 20) {
+      if (dotCount >= 10) {
         clearInterval(dotInterval);
         
         setTimeout(() => {
