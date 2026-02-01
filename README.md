@@ -110,13 +110,11 @@ Magnus — a custom‑trained LLM and related projects available for the communi
 
 - HuggingFace: https://huggingface.co/heavylildude/magnus  
 - Ollama: https://ollama.com/heavylildude/magnus  
-- Ollama (frontend): https://ollama.com/heavylildude/magnus-frontend
 
 ---
 
 ## Contact
 - Public Email: heavylildude@gmail.com  
-- Work Email: mail@heavylildu.de  
 - LinkedIn: https://www.linkedin.com/in/christo-wahyudi  
 - GitHub: https://github.com/heavylildude
 
