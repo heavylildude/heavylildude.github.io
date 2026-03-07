@@ -83,21 +83,19 @@
     AFRAME.registerComponent('markerhandler', {
       init: function () {
         this.el.sceneEl.addEventListener('markerFound', () => {
-          var check = document.getElementById('that').className;
-          if (check == 'off') {
-            document.getElementById('that').className = "on";
+          let video = document.getElementById('that');
+          if (video.className === 'off') {
+            video.className = "on";
+            video.play().catch(e => console.error("browser blocked play:", e));
           }
-
         });
 
         this.el.sceneEl.addEventListener('markerLost', () => {
-          var check = document.getElementById('that').className;
-          if (check == 'on') {
-            document.getElementById('that').className = "off";
-            var x = document.getElementById('that');
-            x.pause();
+          let video = document.getElementById('that');
+          if (video.className === 'on') {
+            video.className = "off";
+            video.pause();
           }
-
         });
       }
     });
@@ -125,7 +123,7 @@
     <a-entity camera></a-entity>
   </a-scene>
 
-  <video id="that" controls class="off">
+  <video id="that" controls autoplay muted playsinline class="on">
     <source src="video.mp4" type="video/mp4">
     <source src="video.ogg" type="video/ogg">
     Your browser does not support the video tag.
