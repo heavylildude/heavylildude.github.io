@@ -11,7 +11,7 @@
 
 body{
 margin:0;
-height:100vh;
+min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -19,6 +19,7 @@ background: radial-gradient(circle at bottom,#0d1b2a,#000814);
 color:white;
 font-family:'Quicksand',sans-serif;
 overflow:hidden;
+padding:20px;
 }
 
 /* stars */
@@ -41,8 +42,9 @@ to{opacity:1}
 
 .card{
 max-width:650px;
+width:100%;
 background:rgba(0,0,0,.45);
-padding:40px;
+padding:30px;
 border-radius:25px;
 backdrop-filter:blur(10px);
 text-align:center;
@@ -53,7 +55,7 @@ box-shadow:0 0 60px rgba(255,150,200,.3);
 
 .title{
 font-family:'Pacifico',cursive;
-font-size:34px;
+font-size:32px;
 color:#ffb3c6;
 margin-bottom:20px;
 }
@@ -61,18 +63,18 @@ margin-bottom:20px;
 /* typing text */
 
 #text{
-font-size:20px;
+font-size:18px;
 line-height:1.8;
-min-height:200px;
+min-height:180px;
 }
 
 /* ending */
 
 #ending{
 font-family:'Pacifico';
-font-size:46px;
+font-size:40px;
 opacity:0;
-margin-top:30px;
+margin-top:25px;
 color:#ff8fab;
 text-shadow:0 0 25px pink;
 transition:2s;
@@ -91,6 +93,28 @@ animation:pop 1s ease forwards;
 @keyframes pop{
 0%{transform:scale(0) translateY(0);opacity:1}
 100%{transform:scale(1.6) translateY(-120px);opacity:0}
+}
+
+/* mobile */
+
+@media (max-width:600px){
+
+.title{
+font-size:26px;
+}
+
+#text{
+font-size:16px;
+}
+
+#ending{
+font-size:32px;
+}
+
+.card{
+padding:25px;
+}
+
 }
 
 iframe{
@@ -112,12 +136,48 @@ display:none;
 
 </div>
 
-<!-- YouTube music -->
-<iframe id="music"
-src="https://www.youtube.com/embed/nSDgHBxUbVQ?enablejsapi=1&loop=1&playlist=nSDgHBxUbVQ">
-</iframe>
+<!-- youtube api -->
+<script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
+
+let player
+
+function onYouTubeIframeAPIReady(){
+
+player = new YT.Player('music', {
+height:'0',
+width:'0',
+videoId:'nSDgHBxUbVQ',
+playerVars:{
+'autoplay':0,
+'loop':1,
+'playlist':'nSDgHBxUbVQ'
+}
+})
+
+}
+
+/* hidden player */
+
+let iframe=document.createElement("div")
+iframe.id="music"
+document.body.appendChild(iframe)
+
+/* stars */
+
+for(let i=0;i<120;i++){
+
+let star=document.createElement("div")
+star.className="star"
+star.style.left=Math.random()*100+"vw"
+star.style.top=Math.random()*100+"vh"
+
+document.body.appendChild(star)
+
+}
+
+/* message */
 
 const message=`Mochi sayang...
 <br>
@@ -152,29 +212,34 @@ Aku tidak akan pernah pergi.
 <br>
 Aku tidak akan pernah melepaskan kamu.`
 
+const container=document.getElementById("text")
 
-const container = document.getElementById("text")
+const lines=message.split("<br>")
 
-const lines = message.split("<br>")
-
-let lineIndex = 0
-let wordIndex = 0
+let lineIndex=0
+let wordIndex=0
 
 function typeLine(){
 
-if(lineIndex >= lines.length) return
+if(lineIndex>=lines.length){
 
-const words = lines[lineIndex].trim().split(" ")
+document.getElementById("ending").style.opacity=1
+return
 
-let lineDiv = document.createElement("div")
+}
+
+const words=lines[lineIndex].trim().split(" ")
+
+let lineDiv=document.createElement("div")
 lineDiv.style.marginBottom="14px"
+
 container.appendChild(lineDiv)
 
 function typeWord(){
 
-if(wordIndex < words.length){
+if(wordIndex<words.length){
 
-lineDiv.innerHTML += words[wordIndex] + " "
+lineDiv.innerHTML+=words[wordIndex]+" "
 wordIndex++
 
 setTimeout(typeWord,160)
@@ -184,7 +249,7 @@ setTimeout(typeWord,160)
 lineIndex++
 wordIndex=0
 
-setTimeout(typeLine,600)
+setTimeout(typeLine,700)
 
 }
 
@@ -195,6 +260,29 @@ typeWord()
 }
 
 typeLine()
+
+/* tap interaction */
+
+document.addEventListener("click",e=>{
+
+if(player) player.playVideo()
+
+for(let i=0;i<15;i++){
+
+let heart=document.createElement("div")
+heart.className="heart"
+heart.innerHTML="❤"
+
+heart.style.left=(e.clientX+Math.random()*60-30)+"px"
+heart.style.top=(e.clientY+Math.random()*60-30)+"px"
+
+document.body.appendChild(heart)
+
+setTimeout(()=>heart.remove(),1000)
+
+}
+
+},{once:true})
 
 </script>
 
