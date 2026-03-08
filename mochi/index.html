@@ -60,7 +60,7 @@ color:#ffb3c6;
 margin-bottom:20px;
 }
 
-/* typing text */
+/* text */
 
 #text{
 font-size:18px;
@@ -99,26 +99,11 @@ animation:pop 1s ease forwards;
 
 @media (max-width:600px){
 
-.title{
-font-size:26px;
-}
+.title{font-size:26px;}
+#text{font-size:16px;}
+#ending{font-size:32px;}
+.card{padding:25px;}
 
-#text{
-font-size:16px;
-}
-
-#ending{
-font-size:32px;
-}
-
-.card{
-padding:25px;
-}
-
-}
-
-iframe{
-display:none;
 }
 
 </style>
@@ -136,25 +121,38 @@ display:none;
 
 </div>
 
-<!-- youtube api -->
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
 
 let player
+let playerReady=false
 
 function onYouTubeIframeAPIReady(){
 
-player = new YT.Player('music', {
+player=new YT.Player('music',{
 height:'0',
 width:'0',
-videoId:'nSDgHBxUbVQ',
+videoId:'KKQl-pIRQMY',
 playerVars:{
 'autoplay':0,
 'loop':1,
-'playlist':'nSDgHBxUbVQ'
+'playlist':'KKQl-pIRQMY'
+},
+events:{
+'onReady':onPlayerReady
 }
 })
+
+}
+
+function onPlayerReady(){
+
+playerReady=true
+
+/* start animation only after player loaded */
+
+startMessage()
 
 }
 
@@ -219,6 +217,10 @@ const lines=message.split("<br>")
 let lineIndex=0
 let wordIndex=0
 
+function startMessage(){
+typeLine()
+}
+
 function typeLine(){
 
 if(lineIndex>=lines.length){
@@ -259,13 +261,13 @@ typeWord()
 
 }
 
-typeLine()
-
-/* tap interaction */
+/* tap → play music + hearts */
 
 document.addEventListener("click",e=>{
 
-if(player) player.playVideo()
+if(playerReady){
+player.playVideo()
+}
 
 for(let i=0;i<15;i++){
 
