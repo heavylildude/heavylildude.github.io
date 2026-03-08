@@ -148,13 +148,8 @@ events:{
 }
 
 function onPlayerReady(){
-
 playerReady=true
-
-/* start animation only after player loaded */
-
 startMessage()
-
 }
 
 /* hidden player */
@@ -176,44 +171,44 @@ document.body.appendChild(star)
 
 }
 
-/* message */
+/* MESSAGE (write it naturally) */
 
 const message=`Mochi sayang...
-<br>
+
 Aku tau kamu capek.
 Aku tau kadang hari-harimu terasa berat.
-<br>
+
 Mungkin banyak hal yang harus kamu pikirkan,
 banyak hal yang burdening you,
 dan kadang rasanya dunia berjalan terlalu cepat.
-<br>
+
 Tapi aku ingin kamu tahu satu hal.
-<br>
-I'm always with you
+
+I'm always with you.
 I adore all your works.
 You are very strong woman.
-<br>
+
 Dan aku sangat bangga sama kamu.
-<br>
+
 Kalau suatu hari kamu merasa lelah,
 atau merasa semuanya terlalu berat...
-<br>
+
 Ingat kita,
 kamu tidak sendirian.
-<br>
+
 Aku selalu ada di sini.
-<br>
+
 Aku akan selalu sayang kamu,
 selalu dukung kamu,
 dan selalu berdiri di samping kamu.
-<br>
+
 Aku tidak akan pernah pergi.
-<br>
+
 Aku tidak akan pernah melepaskan kamu.`
 
 const container=document.getElementById("text")
 
-const lines=message.split("<br>")
+const lines=message.split("\n")
 
 let lineIndex=0
 let wordIndex=0
@@ -231,10 +226,24 @@ return
 
 }
 
-const words=lines[lineIndex].trim().split(" ")
+let line=lines[lineIndex].trim()
+
+/* blank line */
+
+if(line===""){
+let spacer=document.createElement("div")
+spacer.style.height="18px"
+container.appendChild(spacer)
+
+lineIndex++
+setTimeout(typeLine,300)
+return
+}
+
+const words=line.split(" ")
 
 let lineDiv=document.createElement("div")
-lineDiv.style.marginBottom="14px"
+lineDiv.style.marginBottom="10px"
 
 container.appendChild(lineDiv)
 
@@ -252,7 +261,7 @@ setTimeout(typeWord,160)
 lineIndex++
 wordIndex=0
 
-setTimeout(typeLine,700)
+setTimeout(typeLine,600)
 
 }
 
