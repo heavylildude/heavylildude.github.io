@@ -119,49 +119,72 @@ src="https://www.youtube.com/embed/nSDgHBxUbVQ?enablejsapi=1&loop=1&playlist=nSD
 
 <script>
 
-/* stars */
-
-for(let i=0;i<120;i++){
-let star=document.createElement("div")
-star.className="star"
-star.style.left=Math.random()*100+"vw"
-star.style.top=Math.random()*100+"vh"
-document.body.appendChild(star)
-}
-
-/* shorter message */
-
 const message=`Mochi sayang...
-
+<br>
 Aku tau kamu capek.
+Aku tau kadang hari-harimu terasa berat.
+<br>
+Mungkin banyak hal yang harus kamu pikirkan,
+banyak tanggung jawab yang kamu bawa,
+dan kadang rasanya dunia berjalan terlalu cepat.
+<br>
+Tapi aku ingin kamu tahu satu hal.
+<br>
+I'm always with you
+Aku melihat semua usaha kecilmu.
+Aku melihat seberapa kuat hatimu.
+<br>
+Dan aku sangat bangga sama kamu.
+<br>
+Kalau suatu hari kamu merasa lelah,
+atau merasa semuanya terlalu berat...
+<br>
+Ingat kita,
+kamu tidak sendirian.
+<br>
+Aku selalu ada di sini.
+<br>
+Aku akan selalu sayang kamu,
+selalu dukung kamu,
+dan selalu berdiri di samping kamu.
+<br>
+Aku tidak akan pernah pergi.
+<br>
+Aku tidak akan pernah melepaskan kamu.`
 
-Kadang hari terasa berat,
-dan semuanya terasa banyak.
 
-Jadi kalau hari ini terasa berat,
-istirahat saja sebentar...
+const container = document.getElementById("text")
 
-Aku tetap di sini,
-menjaga kamu dengan cinta.
+const lines = message.split("<br>")
 
-Aku sayang kamu,
-dan aku tidak akan pernah melepaskan kamu.`
+let lineIndex = 0
+let wordIndex = 0
 
-const words=message.split(" ")
-let i=0
+function typeLine(){
+
+if(lineIndex >= lines.length) return
+
+const words = lines[lineIndex].trim().split(" ")
+
+let lineDiv = document.createElement("div")
+lineDiv.style.marginBottom="14px"
+container.appendChild(lineDiv)
 
 function typeWord(){
 
-if(i<words.length){
+if(wordIndex < words.length){
 
-document.getElementById("text").innerHTML+=words[i]+" "
-i++
+lineDiv.innerHTML += words[wordIndex] + " "
+wordIndex++
 
-setTimeout(typeWord,180)
+setTimeout(typeWord,160)
 
 }else{
 
-document.getElementById("ending").style.opacity=1
+lineIndex++
+wordIndex=0
+
+setTimeout(typeLine,600)
 
 }
 
@@ -169,29 +192,9 @@ document.getElementById("ending").style.opacity=1
 
 typeWord()
 
-/* hearts + music */
-
-document.addEventListener("click",e=>{
-
-let player=document.getElementById("music")
-player.src+="&autoplay=1"
-
-for(let i=0;i<15;i++){
-
-let heart=document.createElement("div")
-heart.className="heart"
-heart.innerHTML="❤"
-
-heart.style.left=(e.clientX+Math.random()*60-30)+"px"
-heart.style.top=(e.clientY+Math.random()*60-30)+"px"
-
-document.body.appendChild(heart)
-
-setTimeout(()=>heart.remove(),1000)
-
 }
 
-},{once:true})
+typeLine()
 
 </script>
 
