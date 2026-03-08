@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Mochi ❤️</title>
+
+<style>
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family: "Georgia", serif;
+background: radial-gradient(circle at bottom,#0d1b2a,#000814);
+color:white;
+overflow:hidden;
+}
+
+/* stars */
+
+.star{
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+opacity:.8;
+}
+
+/* card */
+
+.card{
+max-width:650px;
+background:rgba(0,0,0,.45);
+padding:40px;
+border-radius:20px;
+backdrop-filter:blur(10px);
+text-align:center;
+box-shadow:0 0 40px rgba(255,255,255,.1);
+}
+
+/* typing text */
+
+#text{
+font-size:20px;
+line-height:1.7;
+min-height:260px;
+}
+
+/* ending */
+
+#ending{
+font-size:40px;
+opacity:0;
+margin-top:30px;
+color:#ff8fab;
+text-shadow:0 0 20px pink;
+transition:2s;
+}
+
+/* floating hearts */
+
+.heart{
+position:absolute;
+font-size:20px;
+color:#ff8fab;
+pointer-events:none;
+animation:pop 1s ease forwards;
+}
+
+@keyframes pop{
+0%{transform:scale(0) translateY(0);opacity:1}
+100%{transform:scale(1.5) translateY(-120px);opacity:0}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<div id="text"></div>
+<div id="ending">I Love You Mochi ❤️</div>
+</div>
+
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9e68a7e8f6.mp3" type="audio/mp3">
+</audio>
+
+<script>
+
+/* create stars */
+
+for(let i=0;i<120;i++){
+
+let star=document.createElement("div");
+star.className="star";
+
+star.style.left=Math.random()*100+"vw";
+star.style.top=Math.random()*100+"vh";
+
+document.body.appendChild(star);
+
+}
+
+/* text content */
+
+const message=`Dear Mochi Sayang...
+
+I see you, every quiet effort, every late night, every time you carry so much with such grace.
+
+I see how deeply responsible you are, how strong your heart is, how you make everything around you feel safer and warmer just by being you.
+
+Your smile at the end of the day, your gentle way of caring for people, even the small things you think no one notices...
+
+I notice.
+
+And I cherish every single one of them.
+
+You're not just loved.
+
+You're endlessly admired.
+
+Endlessly adored.
+
+Endlessly my favorite person in the whole world.
+
+I love you more than words can ever carry.
+
+Today, tomorrow, and every single day after that.
+
+Forever yours...
+
+Your biggest fan & your home.`
+
+const words = message.split(" ")
+let i=0
+
+function typeWord(){
+
+if(i < words.length){
+
+document.getElementById("text").innerHTML += words[i] + " "
+i++
+
+setTimeout(typeWord,200)
+
+}else{
+
+document.getElementById("ending").style.opacity=1
+
+}
+
+}
+
+typeWord()
+
+/* hearts explosion */
+
+document.addEventListener("click",e=>{
+
+for(let i=0;i<12;i++){
+
+let heart=document.createElement("div")
+
+heart.className="heart"
+heart.innerHTML="❤"
+
+heart.style.left=(e.clientX+Math.random()*40-20)+"px"
+heart.style.top=(e.clientY+Math.random()*40-20)+"px"
+
+document.body.appendChild(heart)
+
+setTimeout(()=>heart.remove(),1000)
+
+}
+
+})
+
+/* autoplay music after first tap */
+
+document.addEventListener("click",()=>{
+
+document.getElementById("music").play()
+
+},{once:true})
+
+</script>
+
+</body>
+</html>
