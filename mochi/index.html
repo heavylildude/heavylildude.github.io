@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>For My Mochi ❤️</title>
+<title>For Mochi ❤️</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
 
@@ -12,11 +11,11 @@
 
 body{
 margin:0;
-height:85vh;
+height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background: radial-gradient(circle at bottom,#0d1b2a,#000);
+background: radial-gradient(circle at bottom,#0d1b2a,#000814);
 color:white;
 font-family:'Quicksand',sans-serif;
 overflow:hidden;
@@ -54,7 +53,7 @@ box-shadow:0 0 60px rgba(255,150,200,.3);
 
 .title{
 font-family:'Pacifico',cursive;
-font-size:36px;
+font-size:34px;
 color:#ffb3c6;
 margin-bottom:20px;
 }
@@ -62,16 +61,16 @@ margin-bottom:20px;
 /* typing text */
 
 #text{
-font-size:19px;
+font-size:20px;
 line-height:1.8;
-min-height:260px;
+min-height:200px;
 }
 
 /* ending */
 
 #ending{
 font-family:'Pacifico';
-font-size:48px;
+font-size:46px;
 opacity:0;
 margin-top:30px;
 color:#ff8fab;
@@ -83,7 +82,7 @@ transition:2s;
 
 .heart{
 position:absolute;
-font-size:20px;
+font-size:22px;
 color:#ff8fab;
 pointer-events:none;
 animation:pop 1s ease forwards;
@@ -105,11 +104,11 @@ display:none;
 
 <div class="card">
 
-<div class="title">Dear Mochi Sayang ❤️</div>
+<div class="title">Untuk Mochi ❤️</div>
 
 <div id="text"></div>
 
-<div id="ending">I Love You Mochi ❤️</div>
+<div id="ending">Aku Sayang Kamu ❤️</div>
 
 </div>
 
@@ -130,33 +129,23 @@ star.style.top=Math.random()*100+"vh"
 document.body.appendChild(star)
 }
 
-/* message */
+/* shorter message */
 
-const message=`I see you, every quiet effort, every late night, every time you carry so much with such grace.
+const message=`Mochi sayang...
 
-I see how deeply responsible you are, how strong your heart is, how you make everything around you feel safer and warmer just by being you.
+Aku tau kamu capek.
 
-Your smile at the end of the day, your gentle way of caring for people, even the small things you think no one notices...
+Kadang hari terasa berat,
+dan semuanya terasa banyak.
 
-I notice.
+Jadi kalau hari ini terasa berat,
+istirahat saja sebentar...
 
-And I cherish every single one of them.
+Aku tetap di sini,
+menjaga kamu dengan cinta.
 
-You're not just loved.
-
-You're endlessly admired.
-
-Endlessly adored.
-
-Endlessly my favorite person in the whole world.
-
-I love you more than words can ever carry.
-
-Today, tomorrow, and every single day after that.
-
-Forever yours...
-
-Your biggest fan & your home.`
+Aku sayang kamu,
+dan aku tidak akan pernah melepaskan kamu.`
 
 const words=message.split(" ")
 let i=0
@@ -180,7 +169,7 @@ document.getElementById("ending").style.opacity=1
 
 typeWord()
 
-/* hearts + start music */
+/* hearts + music */
 
 document.addEventListener("click",e=>{
 
@@ -193,8 +182,8 @@ let heart=document.createElement("div")
 heart.className="heart"
 heart.innerHTML="❤"
 
-heart.style.left=(e.clientX+Math.random()*50-25)+"px"
-heart.style.top=(e.clientY+Math.random()*50-25)+"px"
+heart.style.left=(e.clientX+Math.random()*60-30)+"px"
+heart.style.top=(e.clientY+Math.random()*60-30)+"px"
 
 document.body.appendChild(heart)
 
